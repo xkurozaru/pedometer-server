@@ -1,0 +1,11 @@
+{
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+    }
+  },
+  "routes": [
+    { "src": "/api/auth", "dest": "/api/auth" },
+    { "src": "/api/users", "dest": "/api/users" }
+  ]
+}
