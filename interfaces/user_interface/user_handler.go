@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/HackU-team04/Pedometer/application"
-	"github.com/HackU-team04/Pedometer/interfaces"
+	"github.com/xkurozaru/pedometer-server/application"
+	"github.com/xkurozaru/pedometer-server/interfaces"
 )
 
 type UserHandler interface {

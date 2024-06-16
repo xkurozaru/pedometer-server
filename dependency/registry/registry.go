@@ -1,17 +1,17 @@
 package registry
 
 import (
-	"github.com/HackU-team04/Pedometer/application"
-	"github.com/HackU-team04/Pedometer/dependency/config"
-	"github.com/HackU-team04/Pedometer/domain/auth"
-	"github.com/HackU-team04/Pedometer/domain/user"
-	"github.com/HackU-team04/Pedometer/infrastructure/database"
-	user_database "github.com/HackU-team04/Pedometer/infrastructure/database/user"
-	supabase_client "github.com/HackU-team04/Pedometer/infrastructure/supabase"
-	supabase_auth "github.com/HackU-team04/Pedometer/infrastructure/supabase/auth"
-	"github.com/HackU-team04/Pedometer/interfaces/auth_interface"
-	"github.com/HackU-team04/Pedometer/interfaces/user_interface"
 	"github.com/supabase-community/supabase-go"
+	"github.com/xkurozaru/pedometer-server/application"
+	"github.com/xkurozaru/pedometer-server/dependency/config"
+	"github.com/xkurozaru/pedometer-server/domain/auth"
+	"github.com/xkurozaru/pedometer-server/domain/user"
+	"github.com/xkurozaru/pedometer-server/infrastructure/database"
+	user_database "github.com/xkurozaru/pedometer-server/infrastructure/database/user"
+	supabase_client "github.com/xkurozaru/pedometer-server/infrastructure/supabase"
+	supabase_auth "github.com/xkurozaru/pedometer-server/infrastructure/supabase/auth"
+	"github.com/xkurozaru/pedometer-server/interfaces/auth_interface"
+	"github.com/xkurozaru/pedometer-server/interfaces/user_interface"
 	"gorm.io/gorm"
 )
 

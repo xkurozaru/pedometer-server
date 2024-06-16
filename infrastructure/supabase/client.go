@@ -1,8 +1,8 @@
 package supabase_client
 
 import (
-	"github.com/HackU-team04/Pedometer/dependency/config"
 	"github.com/supabase-community/supabase-go"
+	"github.com/xkurozaru/pedometer-server/dependency/config"
 )
 
 func ConnectSupabase(supabaseConfig config.SupabaseConfig) (*supabase.Client, error) {

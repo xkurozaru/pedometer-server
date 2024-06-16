@@ -3,7 +3,7 @@ package users
 import (
 	"net/http"
 
-	"github.com/HackU-team04/Pedometer/dependency/registry"
+	"github.com/xkurozaru/pedometer-server/dependency/registry"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {

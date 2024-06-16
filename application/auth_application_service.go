@@ -1,6 +1,6 @@
 package application
 
-import "github.com/HackU-team04/Pedometer/domain/auth"
+import "github.com/xkurozaru/pedometer-server/domain/auth"
 
 type AuthApplicationService interface {
 	Login(email string, password string) (string, error)

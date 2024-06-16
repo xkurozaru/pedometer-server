@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/HackU-team04/Pedometer/application"
+	"github.com/xkurozaru/pedometer-server/application"
 )
 
 type AuthHandler interface {

@@ -3,8 +3,8 @@ package user_database
 import (
 	"errors"
 
-	model_errors "github.com/HackU-team04/Pedometer/domain/errors"
-	"github.com/HackU-team04/Pedometer/domain/user"
+	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
+	"github.com/xkurozaru/pedometer-server/domain/user"
 
 	"gorm.io/gorm"
 )

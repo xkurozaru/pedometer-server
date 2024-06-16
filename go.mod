@@ -1,4 +1,4 @@
-module github.com/HackU-team04/Pedometer
+module github.com/xkurozaru/pedometer-server
 
 go 1.22.2
 

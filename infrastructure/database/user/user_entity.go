@@ -1,8 +1,8 @@
 package user_database
 
 import (
-	"github.com/HackU-team04/Pedometer/domain/user"
-	"github.com/HackU-team04/Pedometer/infrastructure/database/common"
+	"github.com/xkurozaru/pedometer-server/domain/user"
+	"github.com/xkurozaru/pedometer-server/infrastructure/database/common"
 )
 
 type UserEntity struct {

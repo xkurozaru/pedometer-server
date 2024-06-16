@@ -1,11 +1,11 @@
 package supabase_auth
 
 import (
-	"github.com/HackU-team04/Pedometer/domain/auth"
-	model_errors "github.com/HackU-team04/Pedometer/domain/errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
+	"github.com/xkurozaru/pedometer-server/domain/auth"
+	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
 )
 
 type authAPI struct {

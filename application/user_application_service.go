@@ -3,9 +3,9 @@ package application
 import (
 	"fmt"
 
-	"github.com/HackU-team04/Pedometer/domain/auth"
-	model_errors "github.com/HackU-team04/Pedometer/domain/errors"
-	"github.com/HackU-team04/Pedometer/domain/user"
+	"github.com/xkurozaru/pedometer-server/domain/auth"
+	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
+	"github.com/xkurozaru/pedometer-server/domain/user"
 )
 
 type UserApplicationService interface {

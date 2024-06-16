@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/HackU-team04/Pedometer/dependency/config"
+	"github.com/xkurozaru/pedometer-server/dependency/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
