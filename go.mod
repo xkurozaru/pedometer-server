@@ -3,6 +3,7 @@ module github.com/xkurozaru/pedometer-server
 go 1.22.2
 
 require (
+	github.com/aidarkhanov/nanoid v1.0.8
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/supabase-community/gotrue-go v1.2.0
