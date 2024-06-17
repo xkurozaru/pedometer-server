@@ -2,18 +2,18 @@ package user_database
 
 import (
 	"github.com/xkurozaru/pedometer-server/domain/user"
-	"github.com/xkurozaru/pedometer-server/infrastructure/database/common"
+	common_database "github.com/xkurozaru/pedometer-server/infrastructure/database/common"
 )
 
 type UserEntity struct {
-	common.Model
+	common_database.Model
 	UserID   string
 	Username string
 }
 
 func NewUserEntity(u user.User) UserEntity {
 	return UserEntity{
-		Model:    common.Model{ID: u.ID()},
+		Model:    common_database.Model{ID: u.ID()},
 		UserID:   u.UserID(),
 		Username: u.Username(),
 	}
