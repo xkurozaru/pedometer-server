@@ -14,9 +14,9 @@ func NewWalkingRecordDatabase(db *gorm.DB) walking_record.WalkingRecordRepositor
 	return walkingRecordDatabase{DB: db}
 }
 
-func (d walkingRecordDatabase) Create(w walking_record.WalkingRecord) error {
+func (d walkingRecordDatabase) Upsert(w walking_record.WalkingRecord) error {
 	e := NewWalkingRecordEntity(w)
-	err := d.DB.Create(&e).Error
+	err := d.DB.Save(&e).Error
 	if err != nil {
 		return model_errors.NewInfrastructureError(err)
 	}
