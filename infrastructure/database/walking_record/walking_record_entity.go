@@ -8,9 +8,12 @@ import (
 )
 
 type WalkingRecordEntity struct {
-	UserID   string
-	Date     time.Time
+	UserID   string    `gorm:"primaryKey"`
+	Date     time.Time `gorm:"primaryKey"`
 	Distance int
+
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
 func NewWalkingRecordEntity(w walking_record.WalkingRecord) WalkingRecordEntity {
