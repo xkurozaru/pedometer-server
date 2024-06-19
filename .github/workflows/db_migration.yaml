@@ -1,7 +1,9 @@
-name: Database Migration CI
+name: Database Migration
 
 on:
-  pull_request:
+  push:
+    branches:
+      - dev
     paths:
       - "migration/**"
     workflow_dispatch:
@@ -25,7 +27,7 @@ jobs:
 
       - name: Run validate
         run: |
+          cd migration
           GOOSE_DRIVER=${{ secrets.GOOSE_DRIVER }}
           GOOSE_DBSTRING=${{ secrets.GOOSE_DBSTRING }}
-          GOOSE_MIGRATION_DIR=migration/
-          goose validate
+          goose up
