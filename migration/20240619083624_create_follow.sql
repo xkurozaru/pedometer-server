@@ -13,7 +13,6 @@ DROP CONSTRAINT fk_walking_record_entities_user_id;
 ALTER TABLE walking_record_entities
 ADD FOREIGN KEY fk_walking_record_entities_user_id (user_id) REFERENCES user_entities (user_id);
 
-ALTER TABLE walking_record_entities
 CREATE TABLE follow_entities (
     user_id VARCHAR(36) NOT NULL,
     followed_user_id VARCHAR(36) NOT NULL,
