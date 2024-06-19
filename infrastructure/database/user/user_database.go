@@ -31,11 +31,41 @@ func (d userDatabase) Find(id string) (user.User, error) {
 	err := d.DB.Where("id = ?", id).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return user.User{}, nil
+			return user.User{}, model_errors.NewNotFoundError(err.Error())
 		}
 		return user.User{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	return e.ToModel(), nil
+}
+
+func (d userDatabase) FindByUserID(userID string) (user.User, error) {
+	var e UserEntity
+	err := d.DB.Where("user_id = ?", userID).Take(&e).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return user.User{}, model_errors.NewNotFoundError(err.Error())
+		}
+		return user.User{}, model_errors.NewInfrastructureError(err.Error())
+	}
+	return e.ToModel(), nil
+}
+
+func (d userDatabase) FindFollows(userID string) (user.Users, error) {
+	var es []UserEntity
+	err := d.DB.
+		Table("user_entities").
+		Joins("JOIN follow_entities ON user_entities.id = follow_entities.user_id WHERE follow_entities.user_id = ?", userID).
+		Find(&es).Error
+	if err != nil {
+		return nil, model_errors.NewInfrastructureError(err.Error())
+	}
+
+	var users user.Users
+	for _, e := range es {
+		users = append(users, e.ToModel())
+	}
+	return users, nil
+
 }
 
 func (d userDatabase) FindAll() (user.Users, error) {

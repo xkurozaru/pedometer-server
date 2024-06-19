@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/xkurozaru/pedometer-server/domain/user"
+
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
 	"github.com/xkurozaru/pedometer-server/interfaces"
 )
@@ -32,10 +34,21 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := h.userApplicationService.FetchUser(token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	u := user.User{}
+
+	uID := r.URL.Query().Get("userID")
+	if uID == "" {
+		u, err = h.userApplicationService.FetchUserByToken(token)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else {
+		u, err = h.userApplicationService.FetchUserByUserID(uID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	res := GetUserResponse{

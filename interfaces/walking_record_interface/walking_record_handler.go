@@ -36,7 +36,7 @@ func (h walkingRecordHandler) GetWalkingRecord(w http.ResponseWriter, r *http.Re
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	u, err := h.userApplicationService.FetchUser(token)
+	u, err := h.userApplicationService.FetchUserByToken(token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -65,7 +65,7 @@ func (h walkingRecordHandler) PostWalkingRecord(w http.ResponseWriter, r *http.R
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	u, err := h.userApplicationService.FetchUser(token)
+	u, err := h.userApplicationService.FetchUserByToken(token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return

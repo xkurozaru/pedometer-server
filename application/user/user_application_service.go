@@ -10,7 +10,8 @@ import (
 
 type UserApplicationService interface {
 	RegisterUser(email string, password string, userID string, username string) error
-	FetchUser(token string) (user.User, error)
+	FetchUserByToken(token string) (user.User, error)
+	FetchUserByUserID(userID string) (user.User, error)
 }
 
 type userApplicationService struct {
@@ -57,7 +58,7 @@ func (s userApplicationService) RegisterUser(
 	return nil
 }
 
-func (s userApplicationService) FetchUser(token string) (user.User, error) {
+func (s userApplicationService) FetchUserByToken(token string) (user.User, error) {
 	id, err := s.authRepository.Verify(token)
 	if err != nil {
 		return user.User{}, fmt.Errorf("Verify: %w", err)
@@ -66,6 +67,14 @@ func (s userApplicationService) FetchUser(token string) (user.User, error) {
 	u, err := s.userRepository.Find(id)
 	if err != nil {
 		return user.User{}, fmt.Errorf("Get: %w", err)
+	}
+	return u, nil
+}
+
+func (s userApplicationService) FetchUserByUserID(userID string) (user.User, error) {
+	u, err := s.userRepository.FindByUserID(userID)
+	if err != nil {
+		return user.User{}, fmt.Errorf("FindByUserID: %w", err)
 	}
 	return u, nil
 }
