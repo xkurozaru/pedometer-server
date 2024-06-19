@@ -1,33 +1,33 @@
 package user
 
 type User struct {
-	id       string
 	userID   string
 	username string
+	authID   string
 }
 
-func NewUser(id string, userID string, username string) User {
-	return newUser(id, userID, username)
+func NewUser(userID string, username string, authID string) User {
+	return newUser(userID, username, authID)
 }
-func RecreateUser(id string, userID string, username string) User {
-	return newUser(id, userID, username)
+func RecreateUser(userID string, username string, authID string) User {
+	return newUser(userID, username, authID)
 }
-func newUser(id string, userID string, username string) User {
+func newUser(userID string, username string, authID string) User {
 	return User{
-		id:       id,
 		userID:   userID,
 		username: username,
+		authID:   authID,
 	}
 }
 
-func (u User) ID() string {
-	return u.id
-}
 func (u User) UserID() string {
 	return u.userID
 }
 func (u User) Username() string {
 	return u.username
+}
+func (u User) AuthID() string {
+	return u.authID
 }
 
 type Users []User

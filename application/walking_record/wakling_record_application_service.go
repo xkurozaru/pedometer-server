@@ -66,9 +66,9 @@ func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance
 	total := records.TotalUserDistance()
 	for _, u := range users {
 		dto = append(dto, WalkingRecordDistanceDTO{
-			UserID:   u.ID(),
+			UserID:   u.UserID(),
 			Username: u.Username(),
-			Distance: total[u.ID()],
+			Distance: total[u.UserID()],
 		})
 	}
 

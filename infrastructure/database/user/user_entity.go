@@ -5,19 +5,19 @@ import (
 )
 
 type UserEntity struct {
-	ID       string `gorm:"primaryKey"`
-	UserID   string
+	UserID   string `gorm:"primaryKey"`
 	Username string
+	AuthID   string
 }
 
 func NewUserEntity(u user.User) UserEntity {
 	return UserEntity{
-		ID:       u.ID(),
 		UserID:   u.UserID(),
 		Username: u.Username(),
+		AuthID:   u.AuthID(),
 	}
 }
 
 func (e UserEntity) ToModel() user.User {
-	return user.RecreateUser(e.ID, e.UserID, e.Username)
+	return user.RecreateUser(e.UserID, e.Username, e.AuthID)
 }
