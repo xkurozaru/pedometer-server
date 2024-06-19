@@ -11,7 +11,7 @@ ALTER TABLE walking_record_entities
 DROP CONSTRAINT fk_walking_record_entities_user_id;
 
 ALTER TABLE walking_record_entities
-ADD FOREIGN KEY fk_walking_record_entities_user_id (user_id) REFERENCES user_entities (user_id);
+ADD CONSTRAINT fk_walking_record_entities_user_id FOREIGN KEY (user_id) REFERENCES user_entities (user_id) ON DELETE CASCADE;
 
 CREATE TABLE follow_entities (
     user_id VARCHAR(36) NOT NULL,
@@ -36,7 +36,7 @@ ALTER TABLE walking_record_entities
 DROP CONSTRAINT fk_walking_record_entities_user_id;
 
 ALTER TABLE walking_record_entities
-ADD FOREIGN KEY fk_walking_record_entities_user_id (user_id) REFERENCES user_entities (id);
+ADD CONSTRAINT fk_walking_record_entities_user_id FOREIGN KEY (user_id) REFERENCES user_entities (id) ON DELETE CASCADE;
 
 ALTER TABLE user_entities
 DROP CONSTRAINT unique_user_entities_user_id;
