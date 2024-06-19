@@ -7,6 +7,7 @@
   "routes": [
     { "src": "/api/auth", "dest": "/api/auth" },
     { "src": "/api/health", "dest": "/api/health" },
-    { "src": "/api/users", "dest": "/api/users" }
+    { "src": "/api/users", "dest": "/api/users" },
+    { "src": "/api/records", "dest": "/api/records" }
   ]
 }

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/xkurozaru/pedometer-server/application"
+	auth_application "github.com/xkurozaru/pedometer-server/application/auth"
 )
 
 type AuthHandler interface {
@@ -12,11 +12,11 @@ type AuthHandler interface {
 }
 
 type authHandler struct {
-	authApplicationService application.AuthApplicationService
+	authApplicationService auth_application.AuthApplicationService
 }
 
 func NewAuthHandler(
-	authApplicationService application.AuthApplicationService,
+	authApplicationService auth_application.AuthApplicationService,
 ) AuthHandler {
 	return authHandler{
 		authApplicationService: authApplicationService,

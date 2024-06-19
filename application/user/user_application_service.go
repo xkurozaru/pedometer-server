@@ -1,4 +1,4 @@
-package application
+package user_application
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 
 type UserApplicationService interface {
 	RegisterUser(email string, password string, userID string, username string) error
-	GetUser(token string) (user.User, error)
+	FetchUser(token string) (user.User, error)
 }
 
 type userApplicationService struct {
@@ -57,13 +57,13 @@ func (s userApplicationService) RegisterUser(
 	return nil
 }
 
-func (s userApplicationService) GetUser(token string) (user.User, error) {
+func (s userApplicationService) FetchUser(token string) (user.User, error) {
 	id, err := s.authRepository.Verify(token)
 	if err != nil {
 		return user.User{}, fmt.Errorf("Verify: %w", err)
 	}
 
-	u, err := s.userRepository.Get(id)
+	u, err := s.userRepository.Find(id)
 	if err != nil {
 		return user.User{}, fmt.Errorf("Get: %w", err)
 	}

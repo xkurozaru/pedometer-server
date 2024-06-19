@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/xkurozaru/pedometer-server/application"
+	user_application "github.com/xkurozaru/pedometer-server/application/user"
 	"github.com/xkurozaru/pedometer-server/interfaces"
 )
 
@@ -14,11 +14,11 @@ type UserHandler interface {
 }
 
 type userHandler struct {
-	userApplicationService application.UserApplicationService
+	userApplicationService user_application.UserApplicationService
 }
 
 func NewUserHandler(
-	userApplicationService application.UserApplicationService,
+	userApplicationService user_application.UserApplicationService,
 ) UserHandler {
 	return userHandler{
 		userApplicationService: userApplicationService,
@@ -32,7 +32,7 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := h.userApplicationService.GetUser(token)
+	u, err := h.userApplicationService.FetchUser(token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -43,6 +43,7 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		Username: u.Username(),
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(res); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

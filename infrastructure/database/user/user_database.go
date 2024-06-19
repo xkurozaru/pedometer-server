@@ -21,21 +21,35 @@ func (d userDatabase) Create(user user.User) error {
 	e := NewUserEntity(user)
 	err := d.DB.Create(&e).Error
 	if err != nil {
-		return model_errors.NewInfrastructureError(err)
+		return model_errors.NewInfrastructureError(err.Error())
 	}
 	return nil
 }
 
-func (d userDatabase) Get(id string) (user.User, error) {
+func (d userDatabase) Find(id string) (user.User, error) {
 	var e UserEntity
 	err := d.DB.Where("id = ?", id).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return user.User{}, nil
 		}
-		return user.User{}, model_errors.NewInfrastructureError(err)
+		return user.User{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	return e.ToModel(), nil
+}
+
+func (d userDatabase) FindAll() (user.Users, error) {
+	var es []UserEntity
+	err := d.DB.Find(&es).Error
+	if err != nil {
+		return nil, model_errors.NewInfrastructureError(err.Error())
+	}
+
+	var users user.Users
+	for _, e := range es {
+		users = append(users, e.ToModel())
+	}
+	return users, nil
 }
 
 func (d userDatabase) ExistsByUserID(userID string) (bool, error) {
@@ -45,7 +59,7 @@ func (d userDatabase) ExistsByUserID(userID string) (bool, error) {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil
 		}
-		return false, model_errors.NewInfrastructureError(err)
+		return false, model_errors.NewInfrastructureError(err.Error())
 	}
 	return true, nil
 }
