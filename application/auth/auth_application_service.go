@@ -1,4 +1,4 @@
-package application
+package auth_application
 
 import "github.com/xkurozaru/pedometer-server/domain/auth"
 

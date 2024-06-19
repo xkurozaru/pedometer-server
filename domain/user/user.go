@@ -29,3 +29,5 @@ func (u User) UserID() string {
 func (u User) Username() string {
 	return u.username
 }
+
+type Users []User

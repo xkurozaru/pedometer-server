@@ -9,6 +9,6 @@ var (
 	ErrInfrastructure = errors.New("infrastructure error")
 )
 
-func NewInfrastructureError(err error) error {
-	return fmt.Errorf("%w: %v", ErrInfrastructure, err)
+func NewInfrastructureError(message string) error {
+	return fmt.Errorf("%w: %v", ErrInfrastructure, message)
 }

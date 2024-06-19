@@ -9,7 +9,7 @@ type WalkingRecord struct {
 }
 
 func NewWalkingRecord(userId string, date common.DateTime, distance int) WalkingRecord {
-	return newWalkingRecord(userId, date, distance)
+	return newWalkingRecord(userId, date.StartOfDay(), distance)
 }
 func RecreateWalkingRecord(userId string, date common.DateTime, distance int) WalkingRecord {
 	return newWalkingRecord(userId, date, distance)
@@ -30,4 +30,14 @@ func (w WalkingRecord) Date() common.DateTime {
 }
 func (w WalkingRecord) Distance() int {
 	return w.distance
+}
+
+type WalkingRecords []WalkingRecord
+
+func (ws WalkingRecords) TotalUserDistance() map[string]int {
+	totals := map[string]int{}
+	for _, w := range ws {
+		totals[w.UserID()] += w.Distance()
+	}
+	return totals
 }
