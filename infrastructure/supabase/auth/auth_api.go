@@ -52,9 +52,9 @@ func (a authAPI) Verify(jWT string) (string, error) {
 		return "", model_errors.NewInfrastructureError(err.Error())
 	}
 	if !token.Valid {
-		return "", model_errors.NewInfrastructureError(err.Error())
+		return "", model_errors.NewInfrastructureError("")
 	}
 
-	userID := claims["sub"].(string)
-	return userID, nil
+	authID := claims["sub"].(string)
+	return authID, nil
 }

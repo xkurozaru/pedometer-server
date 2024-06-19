@@ -26,9 +26,9 @@ func (d userDatabase) Create(user user.User) error {
 	return nil
 }
 
-func (d userDatabase) Find(id string) (user.User, error) {
+func (d userDatabase) FindByUserID(userID string) (user.User, error) {
 	var e UserEntity
-	err := d.DB.Where("id = ?", id).Take(&e).Error
+	err := d.DB.Where("user_id = ?", userID).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return user.User{}, model_errors.NewNotFoundError(err.Error())
@@ -38,9 +38,9 @@ func (d userDatabase) Find(id string) (user.User, error) {
 	return e.ToModel(), nil
 }
 
-func (d userDatabase) FindByUserID(userID string) (user.User, error) {
+func (d userDatabase) FindByAuthID(authID string) (user.User, error) {
 	var e UserEntity
-	err := d.DB.Where("user_id = ?", userID).Take(&e).Error
+	err := d.DB.Where("auth_id = ?", authID).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return user.User{}, model_errors.NewNotFoundError(err.Error())

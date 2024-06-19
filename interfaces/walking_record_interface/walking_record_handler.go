@@ -42,7 +42,7 @@ func (h walkingRecordHandler) GetWalkingRecord(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	dto, err := h.walkingRecordApplicationService.FetchFriendsWeeklyWalkingRecordDistance(u.ID(), common.DateTimeNow())
+	dto, err := h.walkingRecordApplicationService.FetchFriendsWeeklyWalkingRecordDistance(u.UserID(), common.DateTimeNow())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -85,7 +85,7 @@ func (h walkingRecordHandler) PostWalkingRecord(w http.ResponseWriter, r *http.R
 		})
 	}
 
-	err = h.walkingRecordApplicationService.ApplyWalkingRecords(u.ID(), command)
+	err = h.walkingRecordApplicationService.ApplyWalkingRecords(u.UserID(), command)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

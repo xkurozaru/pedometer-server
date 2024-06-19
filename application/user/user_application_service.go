@@ -43,12 +43,12 @@ func (s userApplicationService) RegisterUser(
 		return model_errors.NewAlreadyExistsError("user already exists")
 	}
 
-	id, err := s.authRepository.Register(email, password)
+	authID, err := s.authRepository.Register(email, password)
 	if err != nil {
 		return fmt.Errorf("Register: %w", err)
 	}
 
-	u := user.NewUser(id, userID, username)
+	u := user.NewUser(userID, username, authID)
 
 	err = s.userRepository.Create(u)
 	if err != nil {
@@ -59,12 +59,12 @@ func (s userApplicationService) RegisterUser(
 }
 
 func (s userApplicationService) FetchUserByToken(token string) (user.User, error) {
-	id, err := s.authRepository.Verify(token)
+	authID, err := s.authRepository.Verify(token)
 	if err != nil {
 		return user.User{}, fmt.Errorf("Verify: %w", err)
 	}
 
-	u, err := s.userRepository.Find(id)
+	u, err := s.userRepository.FindByAuthID(authID)
 	if err != nil {
 		return user.User{}, fmt.Errorf("Get: %w", err)
 	}
