@@ -7,7 +7,7 @@ import (
 type UserEntity struct {
 	UserID   string `gorm:"primaryKey"`
 	Username string
-	AuthID   string
+	AuthID   string `gorm:"unique"`
 }
 
 func NewUserEntity(u user.User) UserEntity {
