@@ -7,7 +7,10 @@ import (
 	"github.com/xkurozaru/pedometer-server/domain/user"
 )
 
-type FollowApplicationService interface{}
+type FollowApplicationService interface {
+	Follow(userID string, followedUserID string) error
+	Unfollow(userID string, followedUserID string) error
+}
 
 type followApplicationService struct {
 	followRepository follow.FollowRepository
@@ -33,17 +36,8 @@ func (s followApplicationService) Follow(userID string, followedUserID string) e
 	return nil
 }
 
-func (s followApplicationService) FetchFollowUsers(userID string) (user.Users, error) {
-	followUsers, err := s.userRepository.FindFollows(userID)
-	if err != nil {
-		return nil, fmt.Errorf("FindFollows: %w", err)
-	}
-
-	return followUsers, nil
-}
-
 func (s followApplicationService) Unfollow(userID string, followedUserID string) error {
-	follow := follow.NewFollow(userID, followedUserID)
+	follow := follow.RecreateFollow(userID, followedUserID)
 	err := s.followRepository.Delete(follow)
 	if err != nil {
 		return fmt.Errorf("Delete: %w", err)
