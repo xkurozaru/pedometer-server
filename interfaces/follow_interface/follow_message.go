@@ -6,6 +6,6 @@ type PostFollowRequest struct {
 type PostFollowResponse struct{}
 
 type DeleteFollowRequest struct {
-	FollowedUserID string `json:"followed_user_id"`
+	FollowedUserID string `schema:"followed-user-id,required"`
 }
 type DeleteFollowResponse struct{}
