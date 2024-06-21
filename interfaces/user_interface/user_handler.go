@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/schema"
 	"github.com/xkurozaru/pedometer-server/domain/user"
 
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
@@ -35,17 +36,21 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var u user.User
+	var req GetUserRequest
+	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	uID := r.URL.Query().Get("userID")
-	if uID == "" {
+	var u user.User
+	if req.UserID == "" {
 		u, err = h.userApplicationService.FetchUserByToken(token)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	} else {
-		u, err = h.userApplicationService.FetchUserByUserID(uID)
+		u, err = h.userApplicationService.FetchUserByUserID(req.UserID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

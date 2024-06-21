@@ -1,6 +1,8 @@
 package user_interface
 
-type GetUserRequest struct{}
+type GetUserRequest struct {
+	UserID string `schema:"user-id"`
+}
 type GetUserResponse struct {
 	UserID   string `json:"user_id"`
 	Username string `json:"username"`

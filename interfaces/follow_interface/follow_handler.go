@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/schema"
 	follow_application "github.com/xkurozaru/pedometer-server/application/follow"
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
 	"github.com/xkurozaru/pedometer-server/interfaces"
@@ -68,7 +69,7 @@ func (h followHandler) DeleteFollow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req DeleteFollowRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
