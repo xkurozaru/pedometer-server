@@ -7,13 +7,15 @@ import (
 )
 
 const (
+	JST = "Asia/Tokyo"
+
 	HyphenDateFormat = "2006-01-02"
 )
 
 type DateTime time.Time
 
 func DateTimeNow() DateTime {
-	return DateTime(time.Now())
+	return DateTime(time.Now()).inJST()
 }
 
 func DateTimeFromString(s string, layout string) (DateTime, error) {
@@ -21,7 +23,16 @@ func DateTimeFromString(s string, layout string) (DateTime, error) {
 	if err != nil {
 		return DateTime{}, model_errors.NewInvalidError(err.Error())
 	}
-	return DateTime(t), nil
+	return DateTime(t).inJST(), nil
+}
+
+func DateTimeFromTime(t time.Time) DateTime {
+	return DateTime(t).inJST()
+}
+
+func (d DateTime) inJST() DateTime {
+	loc, _ := time.LoadLocation(JST)
+	return DateTime(time.Time(d).In(loc))
 }
 
 func (d DateTime) Time() time.Time {
