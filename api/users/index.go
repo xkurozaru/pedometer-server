@@ -14,6 +14,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		registry.NewUserHandler().GetUser(w, r)
 	case http.MethodPost:
 		registry.NewUserHandler().PostUser(w, r)
+	case http.MethodDelete:
+		registry.NewUserHandler().DeleteUser(w, r)
 	case http.MethodOptions:
 		w.Write([]byte(""))
 	default:

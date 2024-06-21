@@ -13,6 +13,7 @@ import (
 type UserHandler interface {
 	GetUser(w http.ResponseWriter, r *http.Request)
 	PostUser(w http.ResponseWriter, r *http.Request)
+	DeleteUser(w http.ResponseWriter, r *http.Request)
 }
 
 type userHandler struct {
@@ -34,7 +35,7 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u := user.User{}
+	var u user.User
 
 	uID := r.URL.Query().Get("userID")
 	if uID == "" {
@@ -73,6 +74,27 @@ func (h userHandler) PostUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := h.userApplicationService.RegisterUser(req.Email, req.Password, req.UserID, req.Username)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	token, err := interfaces.GetToken(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	u, err := h.userApplicationService.FetchUserByToken(token)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	err = h.userApplicationService.Delete(u)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
