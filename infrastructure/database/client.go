@@ -6,6 +6,7 @@ import (
 	"github.com/xkurozaru/pedometer-server/dependency/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func ConnectDB(dbConfig config.DBConfig) (*gorm.DB, error) {
@@ -17,6 +18,7 @@ func ConnectDB(dbConfig config.DBConfig) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	db.Logger = db.Logger.LogMode(logger.Info)
 
 	return db, nil
 }
