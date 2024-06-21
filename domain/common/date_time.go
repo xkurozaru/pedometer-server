@@ -38,8 +38,7 @@ func (d DateTime) EndOfDay() DateTime {
 }
 
 func (d DateTime) StartOfWeek() DateTime {
-	t := d.Time()
-	return DateTime(t.AddDate(0, 0, -int(t.Weekday())))
+	return d.StartOfDay().addDay(-int(d.weekOfDay()))
 }
 
 func (d DateTime) EndOfWeek() DateTime {
@@ -69,4 +68,8 @@ func (d DateTime) addMonth(n int) DateTime {
 
 func (d DateTime) Format(layout string) string {
 	return d.Time().Format(layout)
+}
+
+func (d DateTime) weekOfDay() int {
+	return int(d.Time().Weekday())
 }

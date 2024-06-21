@@ -50,12 +50,17 @@ func (s walkingRecordApplicationService) ApplyWalkingRecords(userID string, comm
 // NOTE: フレンドの距離を取得する予定だが、全ユーザーの距離を取得するように仮置き
 func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance(userID string, date common.DateTime) ([]WalkingRecordDistanceDTO, error) {
 	// TODO: フレンドに置き換える
-	us, err := s.userRepository.FindAll()
+	friends, err := s.userRepository.FindAll()
 	if err != nil {
 		return nil, fmt.Errorf("FindAll: %w", err)
 	}
 
-	filter := walking_record.NewWalkingRecordFilter(us.UserIDs(), date.StartOfWeek(), date.EndOfWeek())
+	friendIDs := []string{}
+	for _, f := range friends {
+		friendIDs = append(friendIDs, f.UserID())
+	}
+
+	filter := walking_record.NewWalkingRecordFilter(friendIDs, date.StartOfWeek(), date.EndOfWeek())
 
 	records, err := s.walkingRecordRepository.FindByFilter(filter, walking_record.WalkingRecordOrderUserIDAsc)
 	if err != nil {
@@ -64,11 +69,11 @@ func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance
 
 	dto := []WalkingRecordDistanceDTO{}
 	totalMap := records.TotalUserDistance()
-	for _, u := range us {
+	for _, f := range friends {
 		dto = append(dto, WalkingRecordDistanceDTO{
-			UserID:   u.UserID(),
-			Username: u.Username(),
-			Distance: totalMap[u.UserID()],
+			UserID:   f.UserID(),
+			Username: f.Username(),
+			Distance: totalMap[f.UserID()],
 		})
 	}
 

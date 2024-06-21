@@ -1,23 +1,22 @@
 package walking_record_database
 
 import (
-	"time"
-
+	"github.com/xkurozaru/pedometer-server/domain/common"
 	"github.com/xkurozaru/pedometer-server/domain/walking_record"
 	"gorm.io/gorm"
 )
 
 type WalkingRecordFilterEntity struct {
 	UserIDs   []string
-	StartDate time.Time
-	EndDate   time.Time
+	StartDate string
+	EndDate   string
 }
 
 func NewWalkingRecordFilterEntity(filter walking_record.WalkingRecordFilter) WalkingRecordFilterEntity {
 	return WalkingRecordFilterEntity{
 		UserIDs:   filter.UserIDs,
-		StartDate: filter.StartDate.Time(),
-		EndDate:   filter.EndDate.Time(),
+		StartDate: filter.StartDate.Format(common.HyphenDateFormat),
+		EndDate:   filter.EndDate.Format(common.HyphenDateFormat),
 	}
 }
 
