@@ -8,8 +8,8 @@ import (
 )
 
 type WalkingRecordEntity struct {
-	UserID   string    `gorm:"primaryKey"`
-	Date     time.Time `gorm:"primaryKey"`
+	UserID   string `gorm:"primaryKey"`
+	Date     string `gorm:"primaryKey"`
 	Distance int
 
 	CreatedAt time.Time `gorm:"autoCreateTime"`
@@ -19,15 +19,17 @@ type WalkingRecordEntity struct {
 func NewWalkingRecordEntity(w walking_record.WalkingRecord) WalkingRecordEntity {
 	return WalkingRecordEntity{
 		UserID:   w.UserID(),
-		Date:     w.Date().Time(),
+		Date:     w.Date().Format(common.HyphenDateFormat),
 		Distance: w.Distance(),
 	}
 }
 
 func (e WalkingRecordEntity) ToModel() walking_record.WalkingRecord {
+	date, _ := common.DateTimeFromString(e.Date, common.HyphenDateFormat)
+
 	return walking_record.RecreateWalkingRecord(
 		e.UserID,
-		common.DateTime(e.Date),
+		date,
 		e.Distance,
 	)
 }
