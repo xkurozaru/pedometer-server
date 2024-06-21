@@ -13,3 +13,6 @@ type PostUserRequest struct {
 	Username string `json:"username"`
 }
 type PostUserResponse struct{}
+
+type DeleteUserRequest struct{}
+type DeleteUserResponse struct{}
