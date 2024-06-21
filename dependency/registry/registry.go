@@ -3,19 +3,23 @@ package registry
 import (
 	"github.com/supabase-community/supabase-go"
 	auth_application "github.com/xkurozaru/pedometer-server/application/auth"
+	follow_application "github.com/xkurozaru/pedometer-server/application/follow"
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
 	walking_record_application "github.com/xkurozaru/pedometer-server/application/walking_record"
 
 	"github.com/xkurozaru/pedometer-server/dependency/config"
 	"github.com/xkurozaru/pedometer-server/domain/auth"
+	"github.com/xkurozaru/pedometer-server/domain/follow"
 	"github.com/xkurozaru/pedometer-server/domain/user"
 	"github.com/xkurozaru/pedometer-server/domain/walking_record"
 	"github.com/xkurozaru/pedometer-server/infrastructure/database"
+	follow_database "github.com/xkurozaru/pedometer-server/infrastructure/database/follow"
 	user_database "github.com/xkurozaru/pedometer-server/infrastructure/database/user"
 	walking_record_database "github.com/xkurozaru/pedometer-server/infrastructure/database/walking_record"
 	supabase_client "github.com/xkurozaru/pedometer-server/infrastructure/supabase"
 	supabase_auth "github.com/xkurozaru/pedometer-server/infrastructure/supabase/auth"
 	"github.com/xkurozaru/pedometer-server/interfaces/auth_interface"
+	"github.com/xkurozaru/pedometer-server/interfaces/follow_interface"
 	"github.com/xkurozaru/pedometer-server/interfaces/user_interface"
 	"github.com/xkurozaru/pedometer-server/interfaces/walking_record_interface"
 	"gorm.io/gorm"
@@ -23,6 +27,7 @@ import (
 
 type Registry interface {
 	NewAuthHandler() auth_interface.AuthHandler
+	NewFollowHandler() follow_interface.FollowHandler
 	NewUserHandler() user_interface.UserHandler
 	NewWalkingRecordHandler() walking_record_interface.WalkingRecordHandler
 }
@@ -36,6 +41,13 @@ func NewRegistry() Registry {
 func (r registry) NewAuthHandler() auth_interface.AuthHandler {
 	return auth_interface.NewAuthHandler(
 		r.NewAuthApplicationService(),
+	)
+}
+
+func (r registry) NewFollowHandler() follow_interface.FollowHandler {
+	return follow_interface.NewFollowHandler(
+		r.NewFollowApplicationService(),
+		r.NewUserApplicationService(),
 	)
 }
 
@@ -55,6 +67,13 @@ func (r registry) NewWalkingRecordHandler() walking_record_interface.WalkingReco
 func (r registry) NewAuthApplicationService() auth_application.AuthApplicationService {
 	return auth_application.NewAuthApplicationService(
 		r.NewAuthRepository(),
+	)
+}
+
+func (r registry) NewFollowApplicationService() follow_application.FollowApplicationService {
+	return follow_application.NewFollowApplicationService(
+		r.NewFollowRepository(),
+		r.NewUserRepository(),
 	)
 }
 
@@ -78,6 +97,10 @@ func (r registry) NewAuthRepository() auth.AuthRepository {
 		panic(err)
 	}
 	return supabase_auth.NewAuthAPI(r.NewAuthClient(), supabaseConfig.JWTSecret)
+}
+
+func (r registry) NewFollowRepository() follow.FollowRepository {
+	return follow_database.NewFollowDatabase(r.NewDB())
 }
 
 func (r registry) NewUserRepository() user.UserRepository {

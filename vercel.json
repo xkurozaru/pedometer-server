@@ -6,8 +6,9 @@
   },
   "routes": [
     { "src": "/api/auth", "dest": "/api/auth" },
+    { "src": "/api/follow", "dest": "/api/follow" },
     { "src": "/api/health", "dest": "/api/health" },
-    { "src": "/api/users", "dest": "/api/users" },
-    { "src": "/api/record", "dest": "/api/record" }
+    { "src": "/api/record", "dest": "/api/record" },
+    { "src": "/api/users", "dest": "/api/users" }
   ]
 }
