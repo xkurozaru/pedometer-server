@@ -2,10 +2,12 @@ package supabase_auth
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
 	"github.com/xkurozaru/pedometer-server/domain/auth"
 	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
+	"github.com/xkurozaru/pedometer-server/domain/user"
 )
 
 type authAPI struct {
@@ -57,4 +59,16 @@ func (a authAPI) Verify(jWT string) (string, error) {
 
 	authID := claims["sub"].(string)
 	return authID, nil
+}
+
+func (a authAPI) Delete(u user.User) error {
+	req := types.AdminDeleteUserRequest{
+		UserID: uuid.MustParse(u.AuthID()),
+	}
+
+	err := a.supabaseClient.Auth.AdminDeleteUser(req)
+	if err != nil {
+		return model_errors.NewInfrastructureError(err.Error())
+	}
+	return nil
 }

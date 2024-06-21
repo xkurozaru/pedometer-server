@@ -12,6 +12,7 @@ type UserApplicationService interface {
 	RegisterUser(email string, password string, userID string, username string) error
 	FetchUserByToken(token string) (user.User, error)
 	FetchUserByUserID(userID string) (user.User, error)
+	Delete(u user.User) error
 }
 
 type userApplicationService struct {
@@ -77,4 +78,18 @@ func (s userApplicationService) FetchUserByUserID(userID string) (user.User, err
 		return user.User{}, fmt.Errorf("FindByUserID: %w", err)
 	}
 	return u, nil
+}
+
+func (s userApplicationService) Delete(u user.User) error {
+	err := s.authRepository.Delete(u)
+	if err != nil {
+		return fmt.Errorf("DeleteByAuthID: %w", err)
+	}
+
+	err = s.userRepository.Delete(u)
+	if err != nil {
+		return fmt.Errorf("Delete: %w", err)
+	}
+
+	return nil
 }

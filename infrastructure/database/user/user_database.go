@@ -10,16 +10,16 @@ import (
 )
 
 type userDatabase struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func NewUserDatabase(db *gorm.DB) user.UserRepository {
-	return userDatabase{DB: db}
+	return userDatabase{db: db}
 }
 
 func (d userDatabase) Create(user user.User) error {
 	e := NewUserEntity(user)
-	err := d.DB.Create(&e).Error
+	err := d.db.Create(&e).Error
 	if err != nil {
 		return model_errors.NewInfrastructureError(err.Error())
 	}
@@ -28,7 +28,7 @@ func (d userDatabase) Create(user user.User) error {
 
 func (d userDatabase) FindByUserID(userID string) (user.User, error) {
 	var e UserEntity
-	err := d.DB.Where("user_id = ?", userID).Take(&e).Error
+	err := d.db.Where("user_id = ?", userID).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return user.User{}, model_errors.NewNotFoundError(err.Error())
@@ -40,7 +40,7 @@ func (d userDatabase) FindByUserID(userID string) (user.User, error) {
 
 func (d userDatabase) FindByAuthID(authID string) (user.User, error) {
 	var e UserEntity
-	err := d.DB.Where("auth_id = ?", authID).Take(&e).Error
+	err := d.db.Where("auth_id = ?", authID).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return user.User{}, model_errors.NewNotFoundError(err.Error())
@@ -52,7 +52,7 @@ func (d userDatabase) FindByAuthID(authID string) (user.User, error) {
 
 func (d userDatabase) FindFollows(userID string) (user.Users, error) {
 	var es []UserEntity
-	err := d.DB.
+	err := d.db.
 		Table("user_entities").
 		Joins("JOIN follow_entities ON user_entities.id = follow_entities.user_id WHERE follow_entities.user_id = ?", userID).
 		Find(&es).Error
@@ -70,7 +70,7 @@ func (d userDatabase) FindFollows(userID string) (user.Users, error) {
 
 func (d userDatabase) FindAll() (user.Users, error) {
 	var es []UserEntity
-	err := d.DB.Find(&es).Error
+	err := d.db.Find(&es).Error
 	if err != nil {
 		return nil, model_errors.NewInfrastructureError(err.Error())
 	}
@@ -84,7 +84,7 @@ func (d userDatabase) FindAll() (user.Users, error) {
 
 func (d userDatabase) ExistsByUserID(userID string) (bool, error) {
 	var e UserEntity
-	err := d.DB.Where("user_id = ?", userID).Take(&e).Error
+	err := d.db.Where("user_id = ?", userID).Take(&e).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil
@@ -92,4 +92,13 @@ func (d userDatabase) ExistsByUserID(userID string) (bool, error) {
 		return false, model_errors.NewInfrastructureError(err.Error())
 	}
 	return true, nil
+}
+
+func (d userDatabase) Delete(user user.User) error {
+	e := NewUserEntity(user)
+	err := d.db.Delete(&e).Error
+	if err != nil {
+		return model_errors.NewInfrastructureError(err.Error())
+	}
+	return nil
 }
