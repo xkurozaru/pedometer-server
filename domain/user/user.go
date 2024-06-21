@@ -31,3 +31,11 @@ func (u User) AuthID() string {
 }
 
 type Users []User
+
+func (u Users) UserIDs() []string {
+	ids := []string{}
+	for _, user := range u {
+		ids = append(ids, user.UserID())
+	}
+	return ids
+}
