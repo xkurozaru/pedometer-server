@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/supabase-community/gotrue-go/types"
 	"github.com/supabase-community/supabase-go"
+	"github.com/xkurozaru/pedometer-server/dependency/config"
 	"github.com/xkurozaru/pedometer-server/domain/auth"
 	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
 	"github.com/xkurozaru/pedometer-server/domain/user"
@@ -12,16 +13,16 @@ import (
 
 type authAPI struct {
 	supabaseClient *supabase.Client
-	jWTSecret      string
+	supabaseConfig config.SupabaseConfig
 }
 
 func NewAuthAPI(
 	supabaseClient *supabase.Client,
-	jWTSecret string,
+	supabaseConfig config.SupabaseConfig,
 ) auth.AuthRepository {
 	return authAPI{
 		supabaseClient: supabaseClient,
-		jWTSecret:      jWTSecret,
+		supabaseConfig: supabaseConfig,
 	}
 }
 
@@ -48,7 +49,7 @@ func (a authAPI) Login(email string, password string) (string, error) {
 func (a authAPI) Verify(jWT string) (string, error) {
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(jWT, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(a.jWTSecret), nil
+		return []byte(a.supabaseConfig.JWTSecret), nil
 	})
 	if err != nil {
 		return "", model_errors.NewInfrastructureError(err.Error())
@@ -66,7 +67,7 @@ func (a authAPI) Delete(u user.User) error {
 		UserID: uuid.MustParse(u.AuthID()),
 	}
 
-	err := a.supabaseClient.Auth.AdminDeleteUser(req)
+	err := a.supabaseClient.Auth.WithToken(a.supabaseConfig.APIKey).AdminDeleteUser(req)
 	if err != nil {
 		return model_errors.NewInfrastructureError(err.Error())
 	}
