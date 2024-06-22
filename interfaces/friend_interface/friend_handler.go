@@ -86,7 +86,7 @@ func (h friendHandler) PostFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h friendHandler) PatchFriend(w http.ResponseWriter, r *http.Request) {
