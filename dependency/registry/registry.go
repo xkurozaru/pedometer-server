@@ -3,23 +3,23 @@ package registry
 import (
 	"github.com/supabase-community/supabase-go"
 	auth_application "github.com/xkurozaru/pedometer-server/application/auth"
-	follow_application "github.com/xkurozaru/pedometer-server/application/follow"
+	friend_application "github.com/xkurozaru/pedometer-server/application/friend"
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
 	walking_record_application "github.com/xkurozaru/pedometer-server/application/walking_record"
 
 	"github.com/xkurozaru/pedometer-server/dependency/config"
 	"github.com/xkurozaru/pedometer-server/domain/auth"
-	"github.com/xkurozaru/pedometer-server/domain/follow"
+	"github.com/xkurozaru/pedometer-server/domain/friend"
 	"github.com/xkurozaru/pedometer-server/domain/user"
 	"github.com/xkurozaru/pedometer-server/domain/walking_record"
 	"github.com/xkurozaru/pedometer-server/infrastructure/database"
-	follow_database "github.com/xkurozaru/pedometer-server/infrastructure/database/follow"
+	friend_database "github.com/xkurozaru/pedometer-server/infrastructure/database/friend"
 	user_database "github.com/xkurozaru/pedometer-server/infrastructure/database/user"
 	walking_record_database "github.com/xkurozaru/pedometer-server/infrastructure/database/walking_record"
 	supabase_client "github.com/xkurozaru/pedometer-server/infrastructure/supabase"
 	supabase_auth "github.com/xkurozaru/pedometer-server/infrastructure/supabase/auth"
 	"github.com/xkurozaru/pedometer-server/interfaces/auth_interface"
-	"github.com/xkurozaru/pedometer-server/interfaces/follow_interface"
+	"github.com/xkurozaru/pedometer-server/interfaces/friend_interface"
 	"github.com/xkurozaru/pedometer-server/interfaces/user_interface"
 	"github.com/xkurozaru/pedometer-server/interfaces/walking_record_interface"
 	"gorm.io/gorm"
@@ -27,7 +27,7 @@ import (
 
 type Registry interface {
 	NewAuthHandler() auth_interface.AuthHandler
-	NewFollowHandler() follow_interface.FollowHandler
+	NewFriendHandler() friend_interface.FriendHandler
 	NewUserHandler() user_interface.UserHandler
 	NewWalkingRecordHandler() walking_record_interface.WalkingRecordHandler
 }
@@ -44,10 +44,10 @@ func (r registry) NewAuthHandler() auth_interface.AuthHandler {
 	)
 }
 
-func (r registry) NewFollowHandler() follow_interface.FollowHandler {
-	return follow_interface.NewFollowHandler(
-		r.NewFollowApplicationService(),
+func (r registry) NewFriendHandler() friend_interface.FriendHandler {
+	return friend_interface.NewFriendHandler(
 		r.NewUserApplicationService(),
+		r.NewFriendApplicationService(),
 	)
 }
 
@@ -64,16 +64,18 @@ func (r registry) NewWalkingRecordHandler() walking_record_interface.WalkingReco
 	)
 }
 
+// Application Service
 func (r registry) NewAuthApplicationService() auth_application.AuthApplicationService {
 	return auth_application.NewAuthApplicationService(
 		r.NewAuthRepository(),
 	)
 }
 
-func (r registry) NewFollowApplicationService() follow_application.FollowApplicationService {
-	return follow_application.NewFollowApplicationService(
-		r.NewFollowRepository(),
-		r.NewUserRepository(),
+func (r registry) NewFriendApplicationService() friend_application.FriendApplicationService {
+	return friend_application.NewFriendApplicationService(
+		r.NewFriendRepository(),
+		r.NewFriendService(),
+		r.NewFriendQueryService(),
 	)
 }
 
@@ -91,6 +93,19 @@ func (r registry) NewWalkingRecordApplicationService() walking_record_applicatio
 	)
 }
 
+// Domain Service
+func (r registry) NewFriendService() friend.FriendService {
+	return friend.NewFriendService(
+		r.NewFriendRepository(),
+	)
+}
+
+// Query Service
+func (r registry) NewFriendQueryService() friend_application.FriendQueryService {
+	return friend_database.NewFriendQueryService(r.NewDB())
+}
+
+// Repository
 func (r registry) NewAuthRepository() auth.AuthRepository {
 	supabaseConfig, err := config.NewSupabaseConfig()
 	if err != nil {
@@ -99,8 +114,8 @@ func (r registry) NewAuthRepository() auth.AuthRepository {
 	return supabase_auth.NewAuthAPI(r.NewAuthClient(), supabaseConfig.JWTSecret)
 }
 
-func (r registry) NewFollowRepository() follow.FollowRepository {
-	return follow_database.NewFollowDatabase(r.NewDB())
+func (r registry) NewFriendRepository() friend.FriendRepository {
+	return friend_database.NewFriendDatabase(r.NewDB())
 }
 
 func (r registry) NewUserRepository() user.UserRepository {

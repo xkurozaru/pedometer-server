@@ -41,7 +41,7 @@ func (s userApplicationService) RegisterUser(
 		return fmt.Errorf("ExistsByUserID: %w", err)
 	}
 	if exists {
-		return model_errors.NewAlreadyExistsError("user already exists")
+		return model_errors.NewAlreadyExistsError(string(userID))
 	}
 
 	authID, err := s.authRepository.Register(email, password)
