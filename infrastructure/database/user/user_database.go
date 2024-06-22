@@ -83,14 +83,15 @@ func (d userDatabase) FindAll() (user.Users, error) {
 }
 
 func (d userDatabase) ExistsByUserID(userID user.UserID) (bool, error) {
-	var e UserEntity
-	err := d.db.Where("user_id = ?", userID).Take(&e).Error
+	var exists bool
+	err := d.db.Model(&UserEntity{}).
+		Select("COUNT(1) > 0").
+		Where("user_id = ?", userID).
+		Find(&exists).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return false, nil
-		}
 		return false, model_errors.NewInfrastructureError(err.Error())
 	}
+
 	return true, nil
 }
 
