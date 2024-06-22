@@ -94,7 +94,7 @@ func (d userDatabase) ExistsByUserID(userID user.UserID) (bool, error) {
 		return false, model_errors.NewInfrastructureError(err.Error())
 	}
 
-	return true, nil
+	return exists, nil
 }
 
 func (d userDatabase) Delete(user user.User) error {
