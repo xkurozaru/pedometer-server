@@ -1,15 +1,18 @@
 package walking_record
 
-import "github.com/xkurozaru/pedometer-server/domain/common"
+import (
+	"github.com/xkurozaru/pedometer-server/domain/common"
+	"github.com/xkurozaru/pedometer-server/domain/user"
+)
 
 type WalkingRecordFilter struct {
-	UserIDs   []string
+	UserIDs   []user.UserID
 	StartDate common.DateTime
 	EndDate   common.DateTime
 }
 
 func NewWalkingRecordFilter(
-	userIDs []string,
+	userIDs []user.UserID,
 	startDate common.DateTime,
 	endDate common.DateTime,
 ) WalkingRecordFilter {

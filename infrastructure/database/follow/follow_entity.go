@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/xkurozaru/pedometer-server/domain/follow"
+	"github.com/xkurozaru/pedometer-server/domain/user"
 )
 
 type FollowEntity struct {
@@ -16,11 +17,11 @@ type FollowEntity struct {
 
 func NewFollowEntity(f follow.Follow) FollowEntity {
 	return FollowEntity{
-		UserID:         f.UserID(),
-		FollowedUserID: f.FollowedUserID(),
+		UserID:         string(f.UserID()),
+		FollowedUserID: string(f.FollowedUserID()),
 	}
 }
 
 func (e FollowEntity) ToModel() follow.Follow {
-	return follow.RecreateFollow(e.UserID, e.FollowedUserID)
+	return follow.RecreateFollow(user.UserID(e.UserID), user.UserID(e.FollowedUserID))
 }

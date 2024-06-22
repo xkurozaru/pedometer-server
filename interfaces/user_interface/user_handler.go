@@ -50,7 +50,7 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		u, err = h.userApplicationService.FetchUserByUserID(req.UserID)
+		u, err = h.userApplicationService.FetchUserByUserID(user.UserID(req.UserID))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -58,7 +58,7 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := GetUserResponse{
-		UserID:   u.UserID(),
+		UserID:   string(u.UserID()),
 		Username: u.Username(),
 	}
 
@@ -78,7 +78,7 @@ func (h userHandler) PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.userApplicationService.RegisterUser(req.Email, req.Password, req.UserID, req.Username)
+	err := h.userApplicationService.RegisterUser(req.Email, req.Password, user.UserID(req.UserID), req.Username)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

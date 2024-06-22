@@ -13,8 +13,12 @@ type WalkingRecordFilterEntity struct {
 }
 
 func NewWalkingRecordFilterEntity(filter walking_record.WalkingRecordFilter) WalkingRecordFilterEntity {
+	userIDs := []string{}
+	for _, id := range filter.UserIDs {
+		userIDs = append(userIDs, string(id))
+	}
 	return WalkingRecordFilterEntity{
-		UserIDs:   filter.UserIDs,
+		UserIDs:   userIDs,
 		StartDate: filter.StartDate.Format(common.HyphenDateFormat),
 		EndDate:   filter.EndDate.Format(common.HyphenDateFormat),
 	}

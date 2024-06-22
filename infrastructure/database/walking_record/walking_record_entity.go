@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/xkurozaru/pedometer-server/domain/common"
+	"github.com/xkurozaru/pedometer-server/domain/user"
 	"github.com/xkurozaru/pedometer-server/domain/walking_record"
 )
 
@@ -18,7 +19,7 @@ type WalkingRecordEntity struct {
 
 func NewWalkingRecordEntity(w walking_record.WalkingRecord) WalkingRecordEntity {
 	return WalkingRecordEntity{
-		UserID:   w.UserID(),
+		UserID:   string(w.UserID()),
 		Date:     w.Date().Format(common.HyphenDateFormat),
 		Distance: w.Distance(),
 	}
@@ -28,7 +29,7 @@ func (e WalkingRecordEntity) ToModel() walking_record.WalkingRecord {
 	date, _ := common.DateTimeFromString(e.Date, common.HyphenDateFormat)
 
 	return walking_record.RecreateWalkingRecord(
-		e.UserID,
+		user.UserID(e.UserID),
 		date,
 		e.Distance,
 	)

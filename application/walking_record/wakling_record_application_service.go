@@ -9,8 +9,8 @@ import (
 )
 
 type WalkingRecordApplicationService interface {
-	ApplyWalkingRecords(userID string, command []ApplyWalkingRecordCommand) error
-	FetchFriendsWeeklyWalkingRecordDistance(userID string, month common.DateTime) ([]WalkingRecordDistanceDTO, error)
+	ApplyWalkingRecords(userID user.UserID, command []ApplyWalkingRecordCommand) error
+	FetchFriendsWeeklyWalkingRecordDistance(userID user.UserID, month common.DateTime) ([]WalkingRecordDistanceDTO, error)
 }
 
 type walkingRecordApplicationService struct {
@@ -28,7 +28,7 @@ func NewWalkingRecordApplicationService(
 	}
 }
 
-func (s walkingRecordApplicationService) ApplyWalkingRecords(userID string, command []ApplyWalkingRecordCommand) error {
+func (s walkingRecordApplicationService) ApplyWalkingRecords(userID user.UserID, command []ApplyWalkingRecordCommand) error {
 	records := walking_record.WalkingRecords{}
 	for _, c := range command {
 		date, err := common.DateTimeFromString(c.Date, common.HyphenDateFormat)
@@ -48,14 +48,14 @@ func (s walkingRecordApplicationService) ApplyWalkingRecords(userID string, comm
 }
 
 // NOTE: フレンドの距離を取得する予定だが、全ユーザーの距離を取得するように仮置き
-func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance(userID string, date common.DateTime) ([]WalkingRecordDistanceDTO, error) {
+func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance(userID user.UserID, date common.DateTime) ([]WalkingRecordDistanceDTO, error) {
 	// TODO: フレンドに置き換える
 	friends, err := s.userRepository.FindAll()
 	if err != nil {
 		return nil, fmt.Errorf("FindAll: %w", err)
 	}
 
-	friendIDs := []string{}
+	friendIDs := []user.UserID{}
 	for _, f := range friends {
 		friendIDs = append(friendIDs, f.UserID())
 	}
@@ -71,7 +71,7 @@ func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance
 	totalMap := records.TotalUserDistance()
 	for _, f := range friends {
 		dto = append(dto, WalkingRecordDistanceDTO{
-			UserID:   f.UserID(),
+			UserID:   string(f.UserID()),
 			Username: f.Username(),
 			Distance: totalMap[f.UserID()],
 		})
