@@ -29,7 +29,7 @@ func (d friendDatabase) Exists(userID, friendUserID user.UserID) (bool, error) {
 	var exists bool
 	err := d.db.Model(&FriendEntity{}).
 		Select("COUNT(1) > 0").
-		Where("user_id = ? AND friend_user_id", userID, friendUserID).
+		Where("user_id = ? AND friend_user_id = ?", userID, friendUserID).
 		Find(&exists).Error
 	if err != nil {
 		return false, model_errors.NewInfrastructureError(err.Error())
