@@ -89,6 +89,7 @@ func (d userDatabase) ExistsByUserID(userID user.UserID) (bool, error) {
 	err := d.db.Model(&UserEntity{}).
 		Select("COUNT(1) > 0").
 		Where("user_id = ?", userID).
+		Limit(1).
 		Find(&exists).Error
 	if err != nil {
 		return false, model_errors.NewInfrastructureError(err.Error())
