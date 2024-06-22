@@ -26,7 +26,7 @@ func (d userDatabase) Create(user user.User) error {
 	return nil
 }
 
-func (d userDatabase) FindByUserID(userID string) (user.User, error) {
+func (d userDatabase) FindByUserID(userID user.UserID) (user.User, error) {
 	var e UserEntity
 	err := d.db.Where("user_id = ?", userID).Take(&e).Error
 	if err != nil {
@@ -50,7 +50,7 @@ func (d userDatabase) FindByAuthID(authID string) (user.User, error) {
 	return e.ToModel(), nil
 }
 
-func (d userDatabase) FindFollows(userID string) (user.Users, error) {
+func (d userDatabase) FindFollows(userID user.UserID) (user.Users, error) {
 	var es []UserEntity
 	err := d.db.
 		Table("user_entities").
@@ -82,7 +82,7 @@ func (d userDatabase) FindAll() (user.Users, error) {
 	return users, nil
 }
 
-func (d userDatabase) ExistsByUserID(userID string) (bool, error) {
+func (d userDatabase) ExistsByUserID(userID user.UserID) (bool, error) {
 	var e UserEntity
 	err := d.db.Where("user_id = ?", userID).Take(&e).Error
 	if err != nil {

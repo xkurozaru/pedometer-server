@@ -12,12 +12,12 @@ type UserEntity struct {
 
 func NewUserEntity(u user.User) UserEntity {
 	return UserEntity{
-		UserID:   u.UserID(),
+		UserID:   string(u.UserID()),
 		Username: u.Username(),
 		AuthID:   u.AuthID(),
 	}
 }
 
 func (e UserEntity) ToModel() user.User {
-	return user.RecreateUser(e.UserID, e.Username, e.AuthID)
+	return user.RecreateUser(user.UserID(e.UserID), e.Username, e.AuthID)
 }

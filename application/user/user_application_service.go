@@ -9,9 +9,9 @@ import (
 )
 
 type UserApplicationService interface {
-	RegisterUser(email string, password string, userID string, username string) error
+	RegisterUser(email string, password string, userID user.UserID, username string) error
 	FetchUserByToken(token string) (user.User, error)
-	FetchUserByUserID(userID string) (user.User, error)
+	FetchUserByUserID(userID user.UserID) (user.User, error)
 	Delete(u user.User) error
 }
 
@@ -33,7 +33,7 @@ func NewUserApplicationService(
 func (s userApplicationService) RegisterUser(
 	email string,
 	password string,
-	userID string,
+	userID user.UserID,
 	username string,
 ) error {
 	exists, err := s.userRepository.ExistsByUserID(userID)
@@ -72,7 +72,7 @@ func (s userApplicationService) FetchUserByToken(token string) (user.User, error
 	return u, nil
 }
 
-func (s userApplicationService) FetchUserByUserID(userID string) (user.User, error) {
+func (s userApplicationService) FetchUserByUserID(userID user.UserID) (user.User, error) {
 	u, err := s.userRepository.FindByUserID(userID)
 	if err != nil {
 		return user.User{}, fmt.Errorf("FindByUserID: %w", err)

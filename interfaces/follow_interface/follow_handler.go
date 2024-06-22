@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/schema"
 	follow_application "github.com/xkurozaru/pedometer-server/application/follow"
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
+	"github.com/xkurozaru/pedometer-server/domain/user"
 	"github.com/xkurozaru/pedometer-server/interfaces"
 )
 
@@ -48,7 +49,8 @@ func (h followHandler) PostFollow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.followApplicationService.Follow(u.UserID(), req.FollowedUserID); err != nil {
+	err = h.followApplicationService.Follow(u.UserID(), user.UserID(req.FollowedUserID))
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -74,7 +76,8 @@ func (h followHandler) DeleteFollow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.followApplicationService.Unfollow(u.UserID(), req.FollowedUserID); err != nil {
+	err = h.followApplicationService.Unfollow(u.UserID(), user.UserID(req.FollowedUserID))
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

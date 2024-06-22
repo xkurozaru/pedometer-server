@@ -8,8 +8,8 @@ import (
 )
 
 type FollowApplicationService interface {
-	Follow(userID string, followedUserID string) error
-	Unfollow(userID string, followedUserID string) error
+	Follow(userID user.UserID, followedUserID user.UserID) error
+	Unfollow(userID user.UserID, followedUserID user.UserID) error
 }
 
 type followApplicationService struct {
@@ -27,7 +27,7 @@ func NewFollowApplicationService(
 	}
 }
 
-func (s followApplicationService) Follow(userID string, followedUserID string) error {
+func (s followApplicationService) Follow(userID user.UserID, followedUserID user.UserID) error {
 	follow := follow.NewFollow(userID, followedUserID)
 	err := s.followRepository.Upsert(follow)
 	if err != nil {
@@ -36,7 +36,7 @@ func (s followApplicationService) Follow(userID string, followedUserID string) e
 	return nil
 }
 
-func (s followApplicationService) Unfollow(userID string, followedUserID string) error {
+func (s followApplicationService) Unfollow(userID user.UserID, followedUserID user.UserID) error {
 	follow := follow.RecreateFollow(userID, followedUserID)
 	err := s.followRepository.Delete(follow)
 	if err != nil {

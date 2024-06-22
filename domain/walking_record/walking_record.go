@@ -1,20 +1,23 @@
 package walking_record
 
-import "github.com/xkurozaru/pedometer-server/domain/common"
+import (
+	"github.com/xkurozaru/pedometer-server/domain/common"
+	"github.com/xkurozaru/pedometer-server/domain/user"
+)
 
 type WalkingRecord struct {
-	userId   string
+	userId   user.UserID
 	date     common.DateTime
 	distance int // meters
 }
 
-func NewWalkingRecord(userId string, date common.DateTime, distance int) WalkingRecord {
+func NewWalkingRecord(userId user.UserID, date common.DateTime, distance int) WalkingRecord {
 	return newWalkingRecord(userId, date.StartOfDay(), distance)
 }
-func RecreateWalkingRecord(userId string, date common.DateTime, distance int) WalkingRecord {
+func RecreateWalkingRecord(userId user.UserID, date common.DateTime, distance int) WalkingRecord {
 	return newWalkingRecord(userId, date, distance)
 }
-func newWalkingRecord(userId string, date common.DateTime, distance int) WalkingRecord {
+func newWalkingRecord(userId user.UserID, date common.DateTime, distance int) WalkingRecord {
 	return WalkingRecord{
 		userId:   userId,
 		date:     date,
@@ -22,7 +25,7 @@ func newWalkingRecord(userId string, date common.DateTime, distance int) Walking
 	}
 }
 
-func (w WalkingRecord) UserID() string {
+func (w WalkingRecord) UserID() user.UserID {
 	return w.userId
 }
 func (w WalkingRecord) Date() common.DateTime {
@@ -34,8 +37,8 @@ func (w WalkingRecord) Distance() int {
 
 type WalkingRecords []WalkingRecord
 
-func (ws WalkingRecords) TotalUserDistance() map[string]int {
-	totals := map[string]int{}
+func (ws WalkingRecords) TotalUserDistance() map[user.UserID]int {
+	totals := map[user.UserID]int{}
 	for _, w := range ws {
 		totals[w.UserID()] += w.Distance()
 	}
