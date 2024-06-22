@@ -9,10 +9,10 @@ import (
 )
 
 type FriendApplicationService interface {
-	RegisterFriendRequest(fromUserID user.UserID, toUserID user.UserID) error
-	AcceptFriendRequest(fromUserID user.UserID, toUserID user.UserID) error
+	RegisterFriendRequest(userID, friendUserID user.UserID) error
+	AcceptFriendRequest(userID, friendUserID user.UserID) error
 	FetchFriendList(userID user.UserID) (FriendListDTO, error)
-	RemoveFriend(fromUserID user.UserID, toUserID user.UserID) error
+	RemoveFriend(userID, friendUserID user.UserID) error
 }
 
 type friendApplicationService struct {
@@ -34,22 +34,22 @@ func NewFriendApplicationService(
 }
 
 func (s friendApplicationService) RegisterFriendRequest(
-	fromUserID user.UserID,
-	toUserID user.UserID,
+	userID user.UserID,
+	friendUserID user.UserID,
 ) error {
-	exists, err := s.friendRepository.Exists(fromUserID, toUserID)
+	exists, err := s.friendRepository.Exists(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
 	if exists {
-		err = s.friendService.EstablishIfRequested(fromUserID, toUserID)
+		err = s.friendService.EstablishPairIfRequested(userID, friendUserID)
 		if err != nil {
 			return fmt.Errorf("EstablishIfRequested: %w", err)
 		}
 		return nil
 	}
 
-	friends := friend.NewFriendPair(fromUserID, toUserID)
+	friends := friend.NewFriendPair(userID, friendUserID)
 	err = s.friendRepository.UpsertAll(friends)
 	if err != nil {
 		return fmt.Errorf("UpsertAll: %w", err)
@@ -59,18 +59,18 @@ func (s friendApplicationService) RegisterFriendRequest(
 }
 
 func (s friendApplicationService) AcceptFriendRequest(
-	fromUserID user.UserID,
-	toUserID user.UserID,
+	userID user.UserID,
+	friendUserID user.UserID,
 ) error {
-	exists, err := s.friendRepository.Exists(fromUserID, toUserID)
+	exists, err := s.friendRepository.Exists(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
 	if !exists {
-		return model_errors.NewNotFoundError(string(fromUserID))
+		return model_errors.NewNotFoundError(string(friendUserID))
 	}
 
-	err = s.friendService.EstablishIfRequested(fromUserID, toUserID)
+	err = s.friendService.EstablishPairIfRequested(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("EstablishIfRequested: %w", err)
 	}
@@ -90,18 +90,18 @@ func (s friendApplicationService) FetchFriendList(
 }
 
 func (s friendApplicationService) RemoveFriend(
-	fromUserID user.UserID,
-	toUserID user.UserID,
+	userID user.UserID,
+	friendUserID user.UserID,
 ) error {
-	exists, err := s.friendRepository.Exists(fromUserID, toUserID)
+	exists, err := s.friendRepository.Exists(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
 	if !exists {
-		return model_errors.NewNotFoundError(string(fromUserID))
+		return model_errors.NewNotFoundError(string(friendUserID))
 	}
 
-	err = s.friendService.DeletePair(fromUserID, toUserID)
+	err = s.friendService.DeletePair(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("DeletePair: %w", err)
 	}
