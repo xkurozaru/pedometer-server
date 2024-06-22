@@ -11,11 +11,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		registry.NewUserHandler().GetUser(w, r)
+		registry.NewFriendHandler().GetFriend(w, r)
 	case http.MethodPost:
-		registry.NewUserHandler().PostUser(w, r)
+		registry.NewFriendHandler().PostFriend(w, r)
+	case http.MethodPatch:
+		registry.NewFriendHandler().PatchFriend(w, r)
 	case http.MethodDelete:
-		registry.NewUserHandler().DeleteUser(w, r)
+		registry.NewFriendHandler().DeleteFriend(w, r)
 	case http.MethodOptions:
 		w.Write([]byte(""))
 	default:

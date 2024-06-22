@@ -11,7 +11,12 @@ import (
 	"github.com/xkurozaru/pedometer-server/interfaces"
 )
 
-type FriendHandler interface{}
+type FriendHandler interface {
+	GetFriend(w http.ResponseWriter, r *http.Request)
+	PostFriend(w http.ResponseWriter, r *http.Request)
+	PatchFriend(w http.ResponseWriter, r *http.Request)
+	DeleteFriend(w http.ResponseWriter, r *http.Request)
+}
 
 type friendHandler struct {
 	userApplicationService   user_application.UserApplicationService
