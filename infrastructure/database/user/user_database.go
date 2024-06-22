@@ -50,12 +50,15 @@ func (d userDatabase) FindByAuthID(authID string) (user.User, error) {
 	return e.ToModel(), nil
 }
 
-func (d userDatabase) FindFollows(userID user.UserID) (user.Users, error) {
+func (d userDatabase) FindFriends(userID user.UserID) (user.Users, error) {
 	var es []UserEntity
-	err := d.db.
-		Table("user_entities").
-		Joins("JOIN follow_entities ON user_entities.id = follow_entities.user_id WHERE follow_entities.user_id = ?", userID).
+	err := d.db.Table("friend_entities").
+		Select("user_entities.*").
+		Joins("INNER JOIN user_entities ON friend_entities.friend_user_id = user_entities.user_id").
+		Where("friend_entities.user_id = ?", userID).
+		Where("friend_entities.status = ?", "established").
 		Find(&es).Error
+
 	if err != nil {
 		return nil, model_errors.NewInfrastructureError(err.Error())
 	}
@@ -65,7 +68,6 @@ func (d userDatabase) FindFollows(userID user.UserID) (user.Users, error) {
 		users = append(users, e.ToModel())
 	}
 	return users, nil
-
 }
 
 func (d userDatabase) FindAll() (user.Users, error) {

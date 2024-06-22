@@ -8,7 +8,7 @@ import (
 )
 
 type FriendService interface {
-	EstablishIfRequested(fromUserID, toUserID user.UserID) error
+	EstablishPairIfRequested(fromUserID, toUserID user.UserID) error
 	DeletePair(fromUserID, toUserID user.UserID) error
 }
 
@@ -24,16 +24,16 @@ func NewFriendService(
 	}
 }
 
-func (s friendService) EstablishIfRequested(
-	fromUserID user.UserID,
-	toUserID user.UserID,
+func (s friendService) EstablishPairIfRequested(
+	userID user.UserID,
+	friendUserID user.UserID,
 ) error {
-	friend, err := s.friendRepository.Find(toUserID, fromUserID)
+	friend, err := s.friendRepository.Find(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("Find: %w", err)
 	}
 	if !friend.IsRequested() {
-		return model_errors.NewAlreadyExistsError(string(toUserID))
+		return model_errors.NewAlreadyExistsError(string(friendUserID))
 	}
 
 	friends := friend.Establish()
