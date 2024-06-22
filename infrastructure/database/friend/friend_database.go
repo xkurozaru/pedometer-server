@@ -35,7 +35,7 @@ func (d friendDatabase) Exists(userID, friendUserID user.UserID) (bool, error) {
 		return false, model_errors.NewInfrastructureError(err.Error())
 	}
 
-	return true, nil
+	return exists, nil
 }
 
 func (d friendDatabase) UpsertAll(friends friend.Friends) error {
