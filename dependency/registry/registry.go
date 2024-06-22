@@ -111,7 +111,7 @@ func (r registry) NewAuthRepository() auth.AuthRepository {
 	if err != nil {
 		panic(err)
 	}
-	return supabase_auth.NewAuthAPI(r.NewAuthClient(), supabaseConfig.JWTSecret)
+	return supabase_auth.NewAuthAPI(r.NewAuthClient(), supabaseConfig)
 }
 
 func (r registry) NewFriendRepository() friend.FriendRepository {
