@@ -26,16 +26,16 @@ func NewAuthAPI(
 	}
 }
 
-func (a authAPI) Register(email string, password string) (string, error) {
+func (a authAPI) Register(email string, password string) (uuid.UUID, error) {
 	req := types.SignupRequest{
 		Email:    email,
 		Password: password,
 	}
 	res, err := a.supabaseClient.Auth.Signup(req)
 	if err != nil {
-		return "", model_errors.NewInfrastructureError(err.Error())
+		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
 	}
-	return res.User.ID.String(), nil
+	return res.User.ID, nil
 }
 
 func (a authAPI) Login(email string, password string) (string, error) {
@@ -46,25 +46,25 @@ func (a authAPI) Login(email string, password string) (string, error) {
 	return res.AccessToken, nil
 }
 
-func (a authAPI) Verify(jWT string) (string, error) {
+func (a authAPI) Verify(jWT string) (uuid.UUID, error) {
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(jWT, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(a.supabaseConfig.JWTSecret), nil
 	})
 	if err != nil {
-		return "", model_errors.NewInfrastructureError(err.Error())
+		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	if !token.Valid {
-		return "", model_errors.NewInfrastructureError("")
+		return uuid.UUID{}, model_errors.NewInfrastructureError("")
 	}
 
-	authID := claims["sub"].(string)
+	authID := claims["sub"].(uuid.UUID)
 	return authID, nil
 }
 
 func (a authAPI) Delete(u user.User) error {
 	req := types.AdminDeleteUserRequest{
-		UserID: uuid.MustParse(u.AuthID()),
+		UserID: u.AuthID(),
 	}
 
 	err := a.supabaseClient.Auth.WithToken(a.supabaseConfig.APIKey).AdminDeleteUser(req)
