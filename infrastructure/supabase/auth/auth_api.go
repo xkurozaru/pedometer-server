@@ -58,7 +58,11 @@ func (a authAPI) Verify(jWT string) (uuid.UUID, error) {
 		return uuid.UUID{}, model_errors.NewInfrastructureError("")
 	}
 
-	authID := claims["sub"].(uuid.UUID)
+	authID, err := uuid.Parse(claims["sub"].(string))
+	if err != nil {
+		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
+	}
+
 	return authID, nil
 }
 
