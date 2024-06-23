@@ -2,6 +2,7 @@ package walking_record_interface
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
@@ -44,6 +45,7 @@ func (h walkingRecordHandler) GetWalkingRecord(w http.ResponseWriter, r *http.Re
 
 	dto, err := h.walkingRecordApplicationService.FetchFriendsWeeklyWalkingRecordDistance(u.UserID(), common.DateTimeNow())
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -87,6 +89,7 @@ func (h walkingRecordHandler) PostWalkingRecord(w http.ResponseWriter, r *http.R
 
 	err = h.walkingRecordApplicationService.ApplyWalkingRecords(u.UserID(), command)
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

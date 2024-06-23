@@ -2,6 +2,7 @@ package user_interface
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/gorilla/schema"
@@ -43,18 +44,16 @@ func (h userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var u user.User
-	if req.UserID == "" {
+	switch req.UserID {
+	case "":
 		u, err = h.userApplicationService.FetchUserByToken(token)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	} else {
+	default:
 		u, err = h.userApplicationService.FetchUserByUserID(user.UserID(req.UserID))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	}
+	if err != nil {
+		slog.Error(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	res := GetUserResponse{
@@ -80,6 +79,7 @@ func (h userHandler) PostUser(w http.ResponseWriter, r *http.Request) {
 
 	err := h.userApplicationService.RegisterUser(req.Email, req.Password, user.UserID(req.UserID), req.Username)
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -101,6 +101,7 @@ func (h userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err = h.userApplicationService.Delete(u)
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
