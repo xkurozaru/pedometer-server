@@ -4,6 +4,7 @@ import (
 	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
 	"github.com/xkurozaru/pedometer-server/domain/friend"
 	"github.com/xkurozaru/pedometer-server/domain/user"
+	user_database "github.com/xkurozaru/pedometer-server/infrastructure/database/user"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +24,25 @@ func (d friendDatabase) Find(userID, friendUserID user.UserID) (friend.Friend, e
 	}
 
 	return e.ToModel(), nil
+}
+
+func (d friendDatabase) FindFriends(userID user.UserID, status friend.FriendStatus) (user.Users, error) {
+	var es []user_database.UserEntity
+	err := d.db.Table("friend_entities").
+		Select("user_entities.*").
+		Joins("INNER JOIN user_entities ON friend_entities.friend_user_id = user_entities.user_id").
+		Where("friend_entities.user_id = ?", userID).
+		Where("friend_entities.status = ?", status.ToString()).
+		Find(&es).Error
+	if err != nil {
+		return nil, model_errors.NewInfrastructureError(err.Error())
+	}
+
+	var users user.Users
+	for _, e := range es {
+		users = append(users, e.ToModel())
+	}
+	return users, nil
 }
 
 func (d friendDatabase) Exists(userID, friendUserID user.UserID) (bool, error) {
