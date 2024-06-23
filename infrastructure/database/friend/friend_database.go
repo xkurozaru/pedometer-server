@@ -26,7 +26,7 @@ func (d friendDatabase) Find(userID, friendUserID user.UserID) (friend.Friend, e
 	return e.ToModel(), nil
 }
 
-func (d friendDatabase) FindFriends(userID user.UserID, status friend.FriendStatus) (user.Users, error) {
+func (d friendDatabase) FindFriendUsers(userID user.UserID, status friend.FriendStatus) (user.Users, error) {
 	var es []user_database.UserEntity
 	err := d.db.Table("friend_entities").
 		Select("user_entities.*").

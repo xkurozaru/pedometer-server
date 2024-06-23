@@ -79,7 +79,7 @@ func (s friendApplicationService) FetchFriendList(
 	userID user.UserID,
 	status friend.FriendStatus,
 ) ([]FriendDTO, error) {
-	friends, err := s.friendRepository.FindFriends(userID, status)
+	friends, err := s.friendRepository.FindFriendUsers(userID, status)
 	if err != nil {
 		return nil, fmt.Errorf("FindFriends: %w", err)
 	}
