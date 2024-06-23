@@ -11,7 +11,7 @@ import (
 type FriendApplicationService interface {
 	RegisterFriendRequest(userID, friendUserID user.UserID) error
 	AcceptFriendRequest(userID, friendUserID user.UserID) error
-	FetchFriendList(userID user.UserID, status friend.FriendStatus) ([]FriendDTO, error)
+	FetchFriendList(userID user.UserID, status friend.FriendStatus) (user.Users, error)
 	RemoveFriend(userID, friendUserID user.UserID) error
 }
 
@@ -78,20 +78,13 @@ func (s friendApplicationService) AcceptFriendRequest(
 func (s friendApplicationService) FetchFriendList(
 	userID user.UserID,
 	status friend.FriendStatus,
-) ([]FriendDTO, error) {
+) (user.Users, error) {
 	friends, err := s.friendRepository.FindFriendUsers(userID, status)
 	if err != nil {
 		return nil, fmt.Errorf("FindFriends: %w", err)
 	}
 
-	var dto []FriendDTO
-	for _, f := range friends {
-		dto = append(dto, FriendDTO{
-			FriendUserID:   string(f.UserID()),
-			FriendUsername: f.Username(),
-		})
-	}
-	return dto, nil
+	return friends, nil
 }
 
 func (s friendApplicationService) RemoveFriend(

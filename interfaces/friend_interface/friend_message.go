@@ -1,7 +1,5 @@
 package friend_interface
 
-import friend_application "github.com/xkurozaru/pedometer-server/application/friend"
-
 type GetFriendRequest struct {
 	Status string `schema:"status"`
 }
@@ -10,20 +8,6 @@ type GetFriendResponse struct {
 		UserID   string `json:"user_id"`
 		Username string `json:"username"`
 	} `json:"friends"`
-}
-
-func NewGetFriendResponse(dto []friend_application.FriendDTO) GetFriendResponse {
-	res := GetFriendResponse{}
-	for _, f := range dto {
-		res.Friends = append(res.Friends, struct {
-			UserID   string `json:"user_id"`
-			Username string `json:"username"`
-		}{
-			UserID:   f.FriendUserID,
-			Username: f.FriendUsername,
-		})
-	}
-	return res
 }
 
 type PostFriendRequest struct {

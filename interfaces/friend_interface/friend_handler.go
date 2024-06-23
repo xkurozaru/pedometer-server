@@ -53,14 +53,23 @@ func (h friendHandler) GetFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dto, err := h.friendApplicationService.FetchFriendList(u.UserID(), friend.FriendStatusFromString(req.Status))
+	friends, err := h.friendApplicationService.FetchFriendList(u.UserID(), friend.FriendStatusFromString(req.Status))
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	res := NewGetFriendResponse(dto)
+	res := GetFriendResponse{}
+	for _, f := range friends {
+		res.Friends = append(res.Friends, struct {
+			UserID   string `json:"user_id"`
+			Username string `json:"username"`
+		}{
+			UserID:   string(f.UserID()),
+			Username: f.Username(),
+		})
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(res); err != nil {
