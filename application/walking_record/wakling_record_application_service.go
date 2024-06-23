@@ -57,10 +57,6 @@ func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance
 
 	friendIDs := []user.UserID{}
 	for _, f := range friends {
-		// NOTE: 自分自身は除外
-		if f.UserID() == userID {
-			continue
-		}
 		friendIDs = append(friendIDs, f.UserID())
 	}
 
