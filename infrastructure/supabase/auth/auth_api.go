@@ -47,18 +47,21 @@ func (a authAPI) Login(email string, password string) (string, error) {
 }
 
 func (a authAPI) Verify(jWT string) (uuid.UUID, error) {
-	claims := jwt.MapClaims{}
-	token, err := jwt.ParseWithClaims(jWT, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(jWT, func(token *jwt.Token) (interface{}, error) {
 		return []byte(a.supabaseConfig.JWTSecret), nil
 	})
 	if err != nil {
 		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	if !token.Valid {
-		return uuid.UUID{}, model_errors.NewInfrastructureError("")
+		return uuid.UUID{}, model_errors.NewInfrastructureError("invalid token")
 	}
 
-	authID, err := uuid.Parse(claims["sub"].(string))
+	strAuthID, err := token.Claims.GetSubject()
+	if err != nil {
+		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
+	}
+	authID, err := uuid.Parse(strAuthID)
 	if err != nil {
 		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
 	}

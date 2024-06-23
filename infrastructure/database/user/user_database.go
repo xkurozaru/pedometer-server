@@ -1,8 +1,6 @@
 package user_database
 
 import (
-	"errors"
-
 	"github.com/google/uuid"
 	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
 	"github.com/xkurozaru/pedometer-server/domain/user"
@@ -31,9 +29,6 @@ func (d userDatabase) FindByUserID(userID user.UserID) (user.User, error) {
 	var e UserEntity
 	err := d.db.Where("user_id = ?", userID).Take(&e).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return user.User{}, model_errors.NewNotFoundError(err.Error())
-		}
 		return user.User{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	return e.ToModel(), nil
@@ -43,9 +38,6 @@ func (d userDatabase) FindByAuthID(authID uuid.UUID) (user.User, error) {
 	var e UserEntity
 	err := d.db.Where("auth_id = ?", authID.String()).Take(&e).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return user.User{}, model_errors.NewNotFoundError(err.Error())
-		}
 		return user.User{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	return e.ToModel(), nil
