@@ -53,7 +53,7 @@ func (h friendHandler) GetFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dto, err := h.friendApplicationService.FetchFriendList(u.UserID(), friend.FriendStatus(req.Status))
+	dto, err := h.friendApplicationService.FetchFriendList(u.UserID(), friend.FriendStatusFromString(req.Status))
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
