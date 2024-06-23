@@ -2,6 +2,7 @@ package friend_interface
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/gorilla/schema"
@@ -47,6 +48,7 @@ func (h friendHandler) GetFriend(w http.ResponseWriter, r *http.Request) {
 
 	dto, err := h.friendApplicationService.FetchFriendList(u.UserID())
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -82,6 +84,7 @@ func (h friendHandler) PostFriend(w http.ResponseWriter, r *http.Request) {
 
 	err = h.friendApplicationService.RegisterFriendRequest(u.UserID(), user.UserID(req.FriendUserID))
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -109,6 +112,7 @@ func (h friendHandler) PatchFriend(w http.ResponseWriter, r *http.Request) {
 
 	err = h.friendApplicationService.AcceptFriendRequest(u.UserID(), user.UserID(req.FriendUserID))
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -136,6 +140,7 @@ func (h friendHandler) DeleteFriend(w http.ResponseWriter, r *http.Request) {
 
 	err = h.friendApplicationService.RemoveFriend(u.UserID(), user.UserID(req.FriendUserID))
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

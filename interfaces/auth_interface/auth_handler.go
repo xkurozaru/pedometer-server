@@ -2,6 +2,7 @@ package auth_interface
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	auth_application "github.com/xkurozaru/pedometer-server/application/auth"
@@ -32,6 +33,7 @@ func (h authHandler) PostAuth(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.authApplicationService.Login(req.Email, req.Password)
 	if err != nil {
+		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
