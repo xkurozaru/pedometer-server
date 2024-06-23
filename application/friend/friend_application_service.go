@@ -11,25 +11,22 @@ import (
 type FriendApplicationService interface {
 	RegisterFriendRequest(userID, friendUserID user.UserID) error
 	AcceptFriendRequest(userID, friendUserID user.UserID) error
-	FetchFriendList(userID user.UserID) (FriendListDTO, error)
+	FetchFriendList(userID user.UserID, status friend.FriendStatus) ([]FriendDTO, error)
 	RemoveFriend(userID, friendUserID user.UserID) error
 }
 
 type friendApplicationService struct {
-	friendRepository   friend.FriendRepository
-	friendService      friend.FriendService
-	friendQueryService FriendQueryService
+	friendRepository friend.FriendRepository
+	friendService    friend.FriendService
 }
 
 func NewFriendApplicationService(
 	friendRepository friend.FriendRepository,
 	friendService friend.FriendService,
-	friendQueryService FriendQueryService,
 ) FriendApplicationService {
 	return friendApplicationService{
-		friendRepository:   friendRepository,
-		friendService:      friendService,
-		friendQueryService: friendQueryService,
+		friendRepository: friendRepository,
+		friendService:    friendService,
 	}
 }
 
@@ -80,13 +77,21 @@ func (s friendApplicationService) AcceptFriendRequest(
 
 func (s friendApplicationService) FetchFriendList(
 	userID user.UserID,
-) (FriendListDTO, error) {
-	list, err := s.friendQueryService.GetFriendList(userID)
+	status friend.FriendStatus,
+) ([]FriendDTO, error) {
+	friends, err := s.friendRepository.FindFriendUsers(userID, status)
 	if err != nil {
-		return FriendListDTO{}, fmt.Errorf("GetFriendList: %w", err)
+		return nil, fmt.Errorf("FindFriends: %w", err)
 	}
 
-	return list, nil
+	var dto []FriendDTO
+	for _, f := range friends {
+		dto = append(dto, FriendDTO{
+			FriendUserID:   string(f.UserID()),
+			FriendUsername: f.Username(),
+		})
+	}
+	return dto, nil
 }
 
 func (s friendApplicationService) RemoveFriend(

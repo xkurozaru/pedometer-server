@@ -78,7 +78,6 @@ func (r registry) NewFriendApplicationService() friend_application.FriendApplica
 	return friend_application.NewFriendApplicationService(
 		r.NewFriendRepository(),
 		r.NewFriendService(),
-		r.NewFriendQueryService(),
 	)
 }
 
@@ -101,11 +100,6 @@ func (r registry) NewFriendService() friend.FriendService {
 	return friend.NewFriendService(
 		r.NewFriendRepository(),
 	)
-}
-
-// Query Service
-func (r registry) NewFriendQueryService() friend_application.FriendQueryService {
-	return friend_database.NewFriendQueryService(r.NewDB())
 }
 
 // Repository

@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/schema"
 	friend_application "github.com/xkurozaru/pedometer-server/application/friend"
 	user_application "github.com/xkurozaru/pedometer-server/application/user"
+	"github.com/xkurozaru/pedometer-server/domain/friend"
 	"github.com/xkurozaru/pedometer-server/domain/user"
 	"github.com/xkurozaru/pedometer-server/interfaces"
 )
@@ -46,7 +47,13 @@ func (h friendHandler) GetFriend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dto, err := h.friendApplicationService.FetchFriendList(u.UserID())
+	var req GetFriendRequest
+	if err := schema.NewDecoder().Decode(&req, r.URL.Query()); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	dto, err := h.friendApplicationService.FetchFriendList(u.UserID(), friend.FriendStatus(req.Status))
 	if err != nil {
 		slog.Error(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
