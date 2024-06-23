@@ -1,20 +1,22 @@
 package user
 
+import "github.com/google/uuid"
+
 type UserID string
 
 type User struct {
 	userID   UserID
 	username string
-	authID   string
+	authID   uuid.UUID
 }
 
-func NewUser(userID UserID, username string, authID string) User {
+func NewUser(userID UserID, username string, authID uuid.UUID) User {
 	return newUser(userID, username, authID)
 }
-func RecreateUser(userID UserID, username string, authID string) User {
+func RecreateUser(userID UserID, username string, authID uuid.UUID) User {
 	return newUser(userID, username, authID)
 }
-func newUser(userID UserID, username string, authID string) User {
+func newUser(userID UserID, username string, authID uuid.UUID) User {
 	return User{
 		userID:   userID,
 		username: username,
@@ -28,7 +30,7 @@ func (u User) UserID() UserID {
 func (u User) Username() string {
 	return u.username
 }
-func (u User) AuthID() string {
+func (u User) AuthID() uuid.UUID {
 	return u.authID
 }
 
