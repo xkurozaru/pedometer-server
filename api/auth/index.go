@@ -7,15 +7,13 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	registry := registry.NewRegistry()
+	handler := registry.NewRegistry().NewAuthHandler()
 
 	switch r.Method {
 	case http.MethodGet:
 		w.Write([]byte("<h1>登録が完了しました</h1>"))
 	case http.MethodPost:
-		registry.NewAuthHandler().PostAuth(w, r)
-	case http.MethodOptions:
-		w.Write([]byte(""))
+		handler.PostAuth(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

@@ -7,15 +7,13 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	registry := registry.NewRegistry()
+	handler := registry.NewRegistry().NewWalkingRecordHandler()
 
 	switch r.Method {
 	case http.MethodGet:
-		registry.NewWalkingRecordHandler().GetWalkingRecord(w, r)
+		handler.GetWalkingRecord(w, r)
 	case http.MethodPost:
-		registry.NewWalkingRecordHandler().PostWalkingRecord(w, r)
-	case http.MethodOptions:
-		w.Write([]byte(""))
+		handler.PostWalkingRecord(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

@@ -7,19 +7,17 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	registry := registry.NewRegistry()
+	handler := registry.NewRegistry().NewFriendHandler()
 
 	switch r.Method {
 	case http.MethodGet:
-		registry.NewFriendHandler().GetFriend(w, r)
+		handler.GetFriend(w, r)
 	case http.MethodPost:
-		registry.NewFriendHandler().PostFriend(w, r)
+		handler.PostFriend(w, r)
 	case http.MethodPatch:
-		registry.NewFriendHandler().PatchFriend(w, r)
+		handler.PatchFriend(w, r)
 	case http.MethodDelete:
-		registry.NewFriendHandler().DeleteFriend(w, r)
-	case http.MethodOptions:
-		w.Write([]byte(""))
+		handler.DeleteFriend(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
