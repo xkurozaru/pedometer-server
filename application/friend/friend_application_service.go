@@ -2,6 +2,7 @@ package friend_application
 
 import (
 	"fmt"
+	"log/slog"
 
 	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
 	"github.com/xkurozaru/pedometer-server/domain/friend"
@@ -38,19 +39,26 @@ func (s friendApplicationService) RegisterFriendRequest(
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
+	slog.Info("ExistByUserID", "exists", exists)
+
 	if exists {
 		err = s.friendService.EstablishPairIfRequested(userID, friendUserID)
 		if err != nil {
 			return fmt.Errorf("EstablishIfRequested: %w", err)
 		}
+		slog.Info("EstablishIfRequested")
+
 		return nil
 	}
 
 	friends := friend.NewFriendPair(userID, friendUserID)
+	slog.Info("NewFriendPair", "friends", friends)
+
 	err = s.friendRepository.UpsertAll(friends)
 	if err != nil {
 		return fmt.Errorf("UpsertAll: %w", err)
 	}
+	slog.Info("UpsertAll")
 
 	return nil
 }
@@ -63,6 +71,8 @@ func (s friendApplicationService) AcceptFriendRequest(
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
+	slog.Info("ExistByUserID", "exists", exists)
+
 	if !exists {
 		return model_errors.NewNotFoundError(string(friendUserID))
 	}
@@ -71,6 +81,7 @@ func (s friendApplicationService) AcceptFriendRequest(
 	if err != nil {
 		return fmt.Errorf("EstablishIfRequested: %w", err)
 	}
+	slog.Info("EstablishIfRequested")
 
 	return nil
 }
@@ -83,6 +94,7 @@ func (s friendApplicationService) FetchFriendList(
 	if err != nil {
 		return nil, fmt.Errorf("FindFriends: %w", err)
 	}
+	slog.Info("FindFriends", "friends", friends)
 
 	return friends, nil
 }
@@ -95,6 +107,8 @@ func (s friendApplicationService) RemoveFriend(
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
+	slog.Info("ExistByUserID", "exists", exists)
+
 	if !exists {
 		return model_errors.NewNotFoundError(string(friendUserID))
 	}
@@ -103,6 +117,7 @@ func (s friendApplicationService) RemoveFriend(
 	if err != nil {
 		return fmt.Errorf("DeletePair: %w", err)
 	}
+	slog.Info("DeletePair")
 
 	return nil
 }

@@ -2,6 +2,7 @@ package walking_record_application
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/xkurozaru/pedometer-server/domain/common"
 	"github.com/xkurozaru/pedometer-server/domain/friend"
@@ -47,6 +48,7 @@ func (s walkingRecordApplicationService) ApplyWalkingRecords(userID user.UserID,
 	if err != nil {
 		return fmt.Errorf("AllUpsert: %w", err)
 	}
+	slog.Info("AllUpsert")
 
 	return nil
 }
@@ -56,16 +58,20 @@ func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance
 	if err != nil {
 		return nil, fmt.Errorf("FindFriendUsers: %w", err)
 	}
+	slog.Info("FindFriendUsers", "friends", friends)
+
 	if len(friends) == 0 {
 		return []WalkingRecordDistanceDTO{}, nil
 	}
 
 	filter := walking_record.NewWalkingRecordFilter(friends.UserIDs(), date.StartOfWeek(), date.EndOfWeek())
+	slog.Info("NewWalkingRecordFilter", "filter", filter)
 
 	records, err := s.walkingRecordRepository.FindByFilter(filter, walking_record.WalkingRecordOrderUserIDAsc)
 	if err != nil {
 		return nil, fmt.Errorf("FindByFilter: %w", err)
 	}
+	slog.Info("FindByFilter", "records", records)
 
 	dto := []WalkingRecordDistanceDTO{}
 	totalMap := records.TotalUserDistance()

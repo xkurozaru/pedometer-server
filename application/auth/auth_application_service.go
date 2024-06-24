@@ -2,6 +2,7 @@ package auth_application
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/xkurozaru/pedometer-server/domain/auth"
 )
@@ -27,6 +28,7 @@ func (s authApplicationService) Login(email string, password string) (string, er
 	if err != nil {
 		return "", fmt.Errorf("Login: %w", err)
 	}
+	slog.Info("Login", "token", token)
 
 	return token, nil
 }
