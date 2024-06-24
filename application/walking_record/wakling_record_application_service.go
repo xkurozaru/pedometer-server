@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/xkurozaru/pedometer-server/domain/common"
+	"github.com/xkurozaru/pedometer-server/domain/friend"
 	"github.com/xkurozaru/pedometer-server/domain/user"
 	"github.com/xkurozaru/pedometer-server/domain/walking_record"
 )
@@ -14,15 +15,18 @@ type WalkingRecordApplicationService interface {
 }
 
 type walkingRecordApplicationService struct {
+	friendRepository        friend.FriendRepository
 	userRepository          user.UserRepository
 	walkingRecordRepository walking_record.WalkingRecordRepository
 }
 
 func NewWalkingRecordApplicationService(
+	friendRepository friend.FriendRepository,
 	userRepository user.UserRepository,
 	walkingRecordRepository walking_record.WalkingRecordRepository,
 ) WalkingRecordApplicationService {
 	return walkingRecordApplicationService{
+		friendRepository:        friendRepository,
 		userRepository:          userRepository,
 		walkingRecordRepository: walkingRecordRepository,
 	}
@@ -47,20 +51,13 @@ func (s walkingRecordApplicationService) ApplyWalkingRecords(userID user.UserID,
 	return nil
 }
 
-// NOTE: フレンドの距離を取得する予定だが、全ユーザーの距離を取得するように仮置き
 func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance(userID user.UserID, date common.DateTime) ([]WalkingRecordDistanceDTO, error) {
-	// TODO: フレンドに置き換える
-	friends, err := s.userRepository.FindAll()
+	friends, err := s.friendRepository.FindFriendUsers(userID, friend.FriendStatusEstablished)
 	if err != nil {
-		return nil, fmt.Errorf("FindAll: %w", err)
+		return nil, fmt.Errorf("FindFriendUsers: %w", err)
 	}
 
-	friendIDs := []user.UserID{}
-	for _, f := range friends {
-		friendIDs = append(friendIDs, f.UserID())
-	}
-
-	filter := walking_record.NewWalkingRecordFilter(friendIDs, date.StartOfWeek(), date.EndOfWeek())
+	filter := walking_record.NewWalkingRecordFilter(friends.UserIDs(), date.StartOfWeek(), date.EndOfWeek())
 
 	records, err := s.walkingRecordRepository.FindByFilter(filter, walking_record.WalkingRecordOrderUserIDAsc)
 	if err != nil {
