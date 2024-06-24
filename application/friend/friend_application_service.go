@@ -19,15 +19,18 @@ type FriendApplicationService interface {
 type friendApplicationService struct {
 	friendRepository friend.FriendRepository
 	friendService    friend.FriendService
+	userRepository   user.UserRepository
 }
 
 func NewFriendApplicationService(
 	friendRepository friend.FriendRepository,
 	friendService friend.FriendService,
+	userRepository user.UserRepository,
 ) FriendApplicationService {
 	return friendApplicationService{
 		friendRepository: friendRepository,
 		friendService:    friendService,
+		userRepository:   userRepository,
 	}
 }
 
@@ -35,11 +38,21 @@ func (s friendApplicationService) RegisterFriendRequest(
 	userID user.UserID,
 	friendUserID user.UserID,
 ) error {
-	exists, err := s.friendRepository.Exists(userID, friendUserID)
+	exists, err := s.userRepository.ExistsByUserID(friendUserID)
+	if err != nil {
+		return fmt.Errorf("ExistsByUserID: %w", err)
+	}
+	slog.Info("ExistsByUserID", "exists", exists)
+
+	if !exists {
+		return model_errors.NewNotFoundError(string(friendUserID))
+	}
+
+	exists, err = s.friendRepository.Exists(userID, friendUserID)
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
-	slog.Info("ExistByUserID", "exists", exists)
+	slog.Info("Exists", "exists", exists)
 
 	if exists {
 		err = s.friendService.EstablishPairIfRequested(userID, friendUserID)
@@ -71,7 +84,7 @@ func (s friendApplicationService) AcceptFriendRequest(
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
-	slog.Info("ExistByUserID", "exists", exists)
+	slog.Info("Exists", "exists", exists)
 
 	if !exists {
 		return model_errors.NewNotFoundError(string(friendUserID))
@@ -107,7 +120,7 @@ func (s friendApplicationService) RemoveFriend(
 	if err != nil {
 		return fmt.Errorf("Exists: %w", err)
 	}
-	slog.Info("ExistByUserID", "exists", exists)
+	slog.Info("Exists", "exists", exists)
 
 	if !exists {
 		return model_errors.NewNotFoundError(string(friendUserID))

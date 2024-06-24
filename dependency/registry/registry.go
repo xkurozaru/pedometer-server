@@ -78,6 +78,7 @@ func (r registry) NewFriendApplicationService() friend_application.FriendApplica
 	return friend_application.NewFriendApplicationService(
 		r.NewFriendRepository(),
 		r.NewFriendService(),
+		r.NewUserRepository(),
 	)
 }
 
