@@ -56,6 +56,9 @@ func (s walkingRecordApplicationService) FetchFriendsWeeklyWalkingRecordDistance
 	if err != nil {
 		return nil, fmt.Errorf("FindFriendUsers: %w", err)
 	}
+	if len(friends) == 0 {
+		return []WalkingRecordDistanceDTO{}, nil
+	}
 
 	filter := walking_record.NewWalkingRecordFilter(friends.UserIDs(), date.StartOfWeek(), date.EndOfWeek())
 
