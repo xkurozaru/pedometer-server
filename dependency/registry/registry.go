@@ -90,6 +90,7 @@ func (r registry) NewUserApplicationService() user_application.UserApplicationSe
 
 func (r registry) NewWalkingRecordApplicationService() walking_record_application.WalkingRecordApplicationService {
 	return walking_record_application.NewWalkingRecordApplicationService(
+		r.NewFriendRepository(),
 		r.NewUserRepository(),
 		r.NewWalkingRecordRepository(),
 	)
