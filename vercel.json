@@ -29,6 +29,5 @@
       ]
     }
   ],
-  "regions": ["hnd1"],
-  "functionFailoverRegions": ["kix1"]
+  "regions": ["hnd1"]
 }
