@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/xkurozaru/pedometer-server/dependency/config"
@@ -11,23 +12,32 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+var db_instance *gorm.DB
+var err_instance error
+var once sync.Once
+
 func ConnectDB(dbConfig config.DBConfig) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Tokyo",
-		dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.Name, dbConfig.Port,
-	)
+	once.Do(func() {
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Tokyo",
+			dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.Name, dbConfig.Port,
+		)
 
-	db, err := gorm.Open(
-		postgres.Open(dsn),
-		&gorm.Config{
-			NowFunc: func() time.Time {
-				return common.DateTimeNow().Time()
+		db, err := gorm.Open(
+			postgres.Open(dsn),
+			&gorm.Config{
+				NowFunc: func() time.Time {
+					return common.DateTimeNow().Time()
+				},
 			},
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
-	db.Logger = db.Logger.LogMode(logger.Info)
+		)
+		if err != nil {
+			err_instance = err
+			return
+		}
+		db.Logger = db.Logger.LogMode(logger.Info)
 
-	return db, nil
+		db_instance = db
+	})
+
+	return db_instance, err_instance
 }
