@@ -16,6 +16,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		handler.PostUser(w, r)
 	case http.MethodDelete:
 		handler.DeleteUser(w, r)
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

@@ -14,6 +14,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("<h1>登録が完了しました</h1>"))
 	case http.MethodPost:
 		handler.PostAuth(w, r)
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
