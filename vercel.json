@@ -4,10 +4,30 @@
       "GO_BUILD_FLAGS": "-ldflags '-s -w'"
     }
   },
-  "routes": [
-    { "src": "/api/auth", "dest": "/api/auth" },
-    { "src": "/api/friends", "dest": "/api/friends" },
-    { "src": "/api/record", "dest": "/api/record" },
-    { "src": "/api/users", "dest": "/api/users" }
-  ]
+  "rewrites": [
+    { "source": "/api/auth", "destination": "/api/auth" },
+    { "source": "/api/friends", "destination": "/api/friends" },
+    { "source": "/api/record", "destination": "/api/record" },
+    { "source": "/api/users", "destination": "/api/users" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PATCH, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "regions": ["hnd1"]
 }

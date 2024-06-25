@@ -18,6 +18,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		handler.PatchFriend(w, r)
 	case http.MethodDelete:
 		handler.DeleteFriend(w, r)
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

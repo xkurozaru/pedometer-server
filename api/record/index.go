@@ -14,6 +14,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		handler.GetWalkingRecord(w, r)
 	case http.MethodPost:
 		handler.PostWalkingRecord(w, r)
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
