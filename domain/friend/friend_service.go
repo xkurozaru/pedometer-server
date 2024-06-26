@@ -33,7 +33,7 @@ func (s friendService) EstablishPairIfRequested(
 		return fmt.Errorf("Find: %w", err)
 	}
 	if !friend.IsRequested() {
-		return model_errors.NewAlreadyExistsError(string(friendUserID))
+		return model_errors.NewAlreadyExistsError(friendUserID)
 	}
 
 	friends := friend.Establish()

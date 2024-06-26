@@ -9,6 +9,6 @@ var (
 	ErrNotFound = errors.New("not found")
 )
 
-func NewNotFoundError(message string) error {
+func NewNotFoundError[S ~string](message S) error {
 	return fmt.Errorf("%w: %v", ErrNotFound, message)
 }

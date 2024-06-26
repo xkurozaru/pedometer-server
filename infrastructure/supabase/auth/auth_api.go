@@ -54,7 +54,7 @@ func (a authAPI) Verify(jWT string) (uuid.UUID, error) {
 		return uuid.UUID{}, model_errors.NewInfrastructureError(err.Error())
 	}
 	if !token.Valid {
-		return uuid.UUID{}, model_errors.NewInfrastructureError("invalid token")
+		return uuid.UUID{}, model_errors.NewInvalidError(token.Raw)
 	}
 
 	strAuthID, err := token.Claims.GetSubject()

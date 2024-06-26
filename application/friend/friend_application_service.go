@@ -45,7 +45,7 @@ func (s friendApplicationService) RegisterFriendRequest(
 	slog.Info("ExistsByUserID", "exists", exists)
 
 	if !exists {
-		return model_errors.NewNotFoundError(string(friendUserID))
+		return model_errors.NewNotFoundError(friendUserID)
 	}
 
 	exists, err = s.friendRepository.Exists(userID, friendUserID)
@@ -87,7 +87,7 @@ func (s friendApplicationService) AcceptFriendRequest(
 	slog.Info("Exists", "exists", exists)
 
 	if !exists {
-		return model_errors.NewNotFoundError(string(friendUserID))
+		return model_errors.NewNotFoundError(friendUserID)
 	}
 
 	err = s.friendService.EstablishPairIfRequested(userID, friendUserID)
@@ -123,7 +123,7 @@ func (s friendApplicationService) RemoveFriend(
 	slog.Info("Exists", "exists", exists)
 
 	if !exists {
-		return model_errors.NewNotFoundError(string(friendUserID))
+		return model_errors.NewNotFoundError(friendUserID)
 	}
 
 	err = s.friendService.DeletePair(userID, friendUserID)
