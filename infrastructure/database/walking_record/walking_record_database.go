@@ -14,16 +14,7 @@ func NewWalkingRecordDatabase(db *gorm.DB) walking_record.WalkingRecordRepositor
 	return walkingRecordDatabase{db: db}
 }
 
-func (d walkingRecordDatabase) Upsert(w walking_record.WalkingRecord) error {
-	e := NewWalkingRecordEntity(w)
-	err := d.db.Save(&e).Error
-	if err != nil {
-		return model_errors.NewInfrastructureError(err.Error())
-	}
-	return nil
-}
-
-func (d walkingRecordDatabase) AllUpsert(ws walking_record.WalkingRecords) error {
+func (d walkingRecordDatabase) UpsertAll(ws walking_record.WalkingRecords) error {
 	var es []WalkingRecordEntity
 	for _, w := range ws {
 		es = append(es, NewWalkingRecordEntity(w))

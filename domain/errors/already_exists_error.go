@@ -9,6 +9,6 @@ var (
 	ErrAlreadyExists = errors.New("already exists")
 )
 
-func NewAlreadyExistsError(message string) error {
+func NewAlreadyExistsError[S ~string](message S) error {
 	return fmt.Errorf("%w: %v", ErrAlreadyExists, message)
 }

@@ -1,6 +1,7 @@
 package friend
 
 import (
+	model_errors "github.com/xkurozaru/pedometer-server/domain/errors"
 	"github.com/xkurozaru/pedometer-server/domain/user"
 )
 
@@ -31,21 +32,18 @@ func (f Friend) Status() FriendStatus {
 	return f.status
 }
 
-func (f Friend) IsRequesting() bool {
-	return f.status.isRequesting()
-}
-func (f Friend) IsRequested() bool {
+func (f Friend) CanEstablish() bool {
 	return f.status.isRequested()
 }
-func (f Friend) IsEstablished() bool {
-	return f.status.isEstablished()
-}
 
-func (f Friend) Establish() Friends {
+func (f Friend) Establish() (Friends, error) {
+	if !f.CanEstablish() {
+		return Friends{f}, model_errors.NewAlreadyExistsError(f.friendUserID)
+	}
 	return Friends{
 		newFriend(f.userID, f.friendUserID, FriendStatusEstablished),
 		newFriend(f.friendUserID, f.userID, FriendStatusEstablished),
-	}
+	}, nil
 }
 
 type Friends []Friend

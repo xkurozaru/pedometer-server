@@ -1,9 +1,6 @@
 package registry
 
 import (
-	"log/slog"
-	"os"
-
 	"github.com/supabase-community/supabase-go"
 	auth_application "github.com/xkurozaru/pedometer-server/application/auth"
 	friend_application "github.com/xkurozaru/pedometer-server/application/friend"
@@ -77,7 +74,6 @@ func (r registry) NewAuthApplicationService() auth_application.AuthApplicationSe
 func (r registry) NewFriendApplicationService() friend_application.FriendApplicationService {
 	return friend_application.NewFriendApplicationService(
 		r.NewFriendRepository(),
-		r.NewFriendService(),
 		r.NewUserRepository(),
 	)
 }
@@ -97,19 +93,11 @@ func (r registry) NewWalkingRecordApplicationService() walking_record_applicatio
 	)
 }
 
-// Domain Service
-func (r registry) NewFriendService() friend.FriendService {
-	return friend.NewFriendService(
-		r.NewFriendRepository(),
-	)
-}
-
 // Repository
 func (r registry) NewAuthRepository() auth.AuthRepository {
 	supabaseConfig, err := config.NewSupabaseConfig()
 	if err != nil {
-		slog.Error("failed to get supabase config", err)
-		os.Exit(1)
+		panic(err)
 	}
 	return supabase_auth.NewAuthAPI(r.NewAuthClient(), supabaseConfig)
 }
@@ -129,13 +117,11 @@ func (r registry) NewWalkingRecordRepository() walking_record.WalkingRecordRepos
 func (r registry) NewDB() *gorm.DB {
 	dbConfig, err := config.NewDBConfig()
 	if err != nil {
-		slog.Error("failed to get db config", err)
-		os.Exit(1)
+		panic(err)
 	}
 	db, err := database.ConnectDB(dbConfig)
 	if err != nil {
-		slog.Error("failed to connect db", err)
-		os.Exit(1)
+		panic(err)
 	}
 	return db
 }
@@ -143,13 +129,11 @@ func (r registry) NewDB() *gorm.DB {
 func (r registry) NewAuthClient() *supabase.Client {
 	supabaseConfig, err := config.NewSupabaseConfig()
 	if err != nil {
-		slog.Error("failed to get supabase config", err)
-		os.Exit(1)
+		panic(err)
 	}
 	client, err := supabase_client.ConnectSupabase(supabaseConfig)
 	if err != nil {
-		slog.Error("failed to connect supabase", err)
-		os.Exit(1)
+		panic(err)
 	}
 	return client
 }

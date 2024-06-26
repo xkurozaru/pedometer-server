@@ -44,7 +44,7 @@ func (s userApplicationService) RegisterUser(
 	slog.Info("ExistByUserID", "exists", exists)
 
 	if exists {
-		return model_errors.NewAlreadyExistsError(string(userID))
+		return model_errors.NewAlreadyExistsError(userID)
 	}
 
 	authID, err := s.authRepository.Register(email, password)

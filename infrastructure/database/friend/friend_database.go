@@ -73,11 +73,22 @@ func (d friendDatabase) UpsertAll(friends friend.Friends) error {
 	return nil
 }
 
-func (d friendDatabase) Delete(userID, friendUserID user.UserID) error {
-	err := d.db.Where("user_id = ? AND friend_user_id = ?", userID, friendUserID).Delete(&FriendEntity{}).Error
+func (d friendDatabase) DeletePair(userID, friendUserID user.UserID) error {
+	err := d.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Where("user_id = ? AND friend_user_id = ?", userID, friendUserID).Delete(&FriendEntity{}).Error
+		if err != nil {
+			return err
+		}
+		err = tx.Where("user_id = ? AND friend_user_id = ?", friendUserID, userID).Delete(&FriendEntity{}).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return model_errors.NewInfrastructureError(err.Error())
 	}
 
 	return nil
+
 }

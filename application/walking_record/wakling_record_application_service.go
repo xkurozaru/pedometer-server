@@ -43,12 +43,13 @@ func (s walkingRecordApplicationService) ApplyWalkingRecords(userID user.UserID,
 		record := walking_record.NewWalkingRecord(userID, date, c.Distance)
 		records = append(records, record)
 	}
+	slog.Info("NewWalkingRecord", "records", records)
 
-	err := s.walkingRecordRepository.AllUpsert(records)
+	err := s.walkingRecordRepository.UpsertAll(records)
 	if err != nil {
-		return fmt.Errorf("AllUpsert: %w", err)
+		return fmt.Errorf("UpsertAll: %w", err)
 	}
-	slog.Info("AllUpsert")
+	slog.Info("UpsertAll")
 
 	return nil
 }
