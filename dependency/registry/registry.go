@@ -74,7 +74,6 @@ func (r registry) NewAuthApplicationService() auth_application.AuthApplicationSe
 func (r registry) NewFriendApplicationService() friend_application.FriendApplicationService {
 	return friend_application.NewFriendApplicationService(
 		r.NewFriendRepository(),
-		r.NewFriendService(),
 		r.NewUserRepository(),
 	)
 }
@@ -91,13 +90,6 @@ func (r registry) NewWalkingRecordApplicationService() walking_record_applicatio
 		r.NewFriendRepository(),
 		r.NewUserRepository(),
 		r.NewWalkingRecordRepository(),
-	)
-}
-
-// Domain Service
-func (r registry) NewFriendService() friend.FriendService {
-	return friend.NewFriendService(
-		r.NewFriendRepository(),
 	)
 }
 
