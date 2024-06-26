@@ -43,20 +43,6 @@ func (d userDatabase) FindByAuthID(authID uuid.UUID) (user.User, error) {
 	return e.ToModel(), nil
 }
 
-func (d userDatabase) FindAll() (user.Users, error) {
-	var es []UserEntity
-	err := d.db.Find(&es).Error
-	if err != nil {
-		return nil, model_errors.NewInfrastructureError(err.Error())
-	}
-
-	var users user.Users
-	for _, e := range es {
-		users = append(users, e.ToModel())
-	}
-	return users, nil
-}
-
 func (d userDatabase) ExistsByUserID(userID user.UserID) (bool, error) {
 	var exists bool
 	err := d.db.Model(&UserEntity{}).
